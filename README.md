@@ -12,19 +12,6 @@ Uses matter-js for physics
 Touch gestures for interaction
 supports collision with platforms
 
-Prototype Scaffolding:
-
-/PlayingPuzzle
-│── assets/              # Game assets (images, sounds, etc.)
-│── components/          # React components (UI elements, menu, etc.)
-│── entities/            # Game objects (Player, Floor, Platforms)
-│── hooks/               # Custom React Hooks
-│── screens/             # Main screens (Game, Main Menu)
-│── systems/             # Game logic (Physics, Movement, Updates)
-│── App.js               # Main entry file
-│── package.json         # Dependencies and scripts
-│── index.js             # App entry point
-│── README.md            # You are here!
 
 *****************SETUP & INSTALLATION***********************
 
