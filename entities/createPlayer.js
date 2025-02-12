@@ -1,4 +1,5 @@
 import Matter from "matter-js";
+import Player from "./Player";
 
 export const createPlayer = (x, y, world) => {
     let player = Matter.Bodies.rectangle(x, y, 40, 40, {
@@ -9,6 +10,6 @@ export const createPlayer = (x, y, world) => {
         collisionFilter: { group: -1 } // Ensures proper collision
     });
 
-    Matter.World.add(world, player);
-    return { body: player };
+    // Don't add to world here since createWorld.js already does it
+    return { body: player };  // Just return the body
 };

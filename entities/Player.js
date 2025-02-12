@@ -3,8 +3,11 @@ import { View } from "react-native";
 
 const Player = (props) => {
     const { body } = props;
-    const width = body.bounds.max.x - body.bounds.min.x;
-    const height = body.bounds.max.y - body.bounds.min.y;
+    
+    if (!body) return null;
+
+    const width = 40;  // Fixed width
+    const height = 40; // Fixed height
     const x = body.position.x - width / 2;
     const y = body.position.y - height / 2;
 
@@ -16,7 +19,8 @@ const Player = (props) => {
                 top: y,
                 width: width,
                 height: height,
-                backgroundColor: "blue", // Color for visibility
+                backgroundColor: "blue",
+                borderRadius: 5, // Optional: makes the box slightly rounded
             }}
         />
     );
