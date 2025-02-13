@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
@@ -8,7 +8,31 @@ import MoveSystem from "../systems/MoveSystem";
 const GameScreen = () => {
     const [score, setScore] = useState(0);
     const [isVictory, setIsVictory] = useState(false);
+    const [gameEngine, setGameEngine] = useState(null);
     const world = createWorld();
+
+    useEffect(() => {
+        // Add keyboard event listeners
+        const handleKeyDown = (e) => {
+            if (gameEngine && !e.repeat) {
+                gameEngine.dispatch({ type: "keydown", key: e.key });
+            }
+        };
+
+        const handleKeyUp = (e) => {
+            if (gameEngine) {
+                gameEngine.dispatch({ type: "keyup", key: e.key });
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+        };
+    }, [gameEngine]);
 
     const onEvent = (event) => {
         if (event.type === "victory") {
@@ -19,6 +43,7 @@ const GameScreen = () => {
     return (
         <View style={{ flex: 1 }}>
             <GameEngine
+                ref={(ref) => setGameEngine(ref)}
                 style={{ flex: 1, backgroundColor: "black" }}
                 systems={[Physics, MoveSystem]}
                 entities={world}
