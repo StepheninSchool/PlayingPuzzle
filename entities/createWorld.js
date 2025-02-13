@@ -3,6 +3,7 @@ import { createPlayer } from "./createPlayer";
 import Player from "./Player";
 import Floor from "./Floor";
 import GoalArea from "./GoalArea";
+import Enemy from "./Enemy";
 
 const createWorld = () => {
     let engine = Matter.Engine.create({ 
@@ -17,9 +18,17 @@ const createWorld = () => {
         friction: 0.3,
     });
 
-    let player = createPlayer(200, 300, world);
+    let player = createPlayer(100, 550, world);
 
-    Matter.World.add(world, [floor, player.body]);
+    // Create enemy in the middle of the screen, higher up
+    let enemy = Matter.Bodies.rectangle(200, 300, 40, 40, {
+        isStatic: true,
+        label: "Enemy",
+        friction: 0,
+        restitution: 0,
+    });
+
+    Matter.World.add(world, [floor, player.body, enemy]);
 
     // Goal area dimensions
     const goalPosition = { x: 300, y: 100 }; // Right upper area
@@ -29,6 +38,7 @@ const createWorld = () => {
         physics: { engine, world },
         floor: { body: floor, renderer: Floor },
         player: { body: player.body, renderer: Player, size: [40, 40] },
+        enemy: { body: enemy, renderer: Enemy, direction: 1 }, // direction: 1 for right, -1 for left
         goalArea: { 
             position: goalPosition, 
             size: goalSize,

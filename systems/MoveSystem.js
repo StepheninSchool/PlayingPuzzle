@@ -7,9 +7,18 @@ let keyPressed = {};
 
 const MoveSystem = (entities, { touches, events = [], dispatch }) => {
     let player = entities.player.body;
+    let enemy = entities.enemy.body;
     let goalArea = entities.goalArea;
 
     if (!player) return entities;
+
+    // Check collision with enemy
+    const playerBounds = player.bounds;
+    const enemyBounds = enemy.bounds;
+
+    if (Matter.Bounds.overlaps(playerBounds, enemyBounds)) {
+        dispatch({ type: "game-over" });
+    }
 
     // Handle keyboard events
     if (events.length) {
@@ -43,7 +52,7 @@ const MoveSystem = (entities, { touches, events = [], dispatch }) => {
         });
     }
 
-    // Check if player is in goal area
+    // Check victory condition
     const playerX = player.position.x;
     const playerY = player.position.y;
     
