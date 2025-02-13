@@ -15,7 +15,7 @@ supports collision with platforms
 
 *****************SETUP & INSTALLATION***********************
 
-1. CLONE THE REPOSITORY: "git clone https://github.com/<**your-github-username>**/PlayingPuzzle.git
+1. CLONE THE REPOSITORY: "git clone https://github.com/**your-github-username**/PlayingPuzzle.git
 2. CHANGE TO THE NEW DIRECTORY: "cd PlayingPuzzle"
 3. INSTALL DEPENDANCIES:
 
