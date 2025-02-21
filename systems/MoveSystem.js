@@ -6,15 +6,18 @@ let scoreTimeout; // Timeout for scoring
 let keyPressed = {};
 
 const PLAYER_SPEED = 2;
-const MOVEMENT_RANGE = 150;
-const CENTER_X = 200; // Match enemy's center position
-const LEFT_BOUNDARY = CENTER_X - MOVEMENT_RANGE;
-const RIGHT_BOUNDARY = CENTER_X + MOVEMENT_RANGE;
+const MOVEMENT_RANGE = 300; // Increased range for wider screen
+const PLAYER_WIDTH = 40; // Player width for boundary calculations
 
 const MoveSystem = (entities, { touches, events = [], dispatch }) => {
     let player = entities.player.body;
     let enemy = entities.enemy.body;
     let goalArea = entities.goalArea;
+    const WINDOW_WIDTH = entities.windowWidth;
+    
+    // Calculate boundaries based on window width
+    const LEFT_BOUNDARY = PLAYER_WIDTH/2 + 10; // Add small offset from border
+    const RIGHT_BOUNDARY = WINDOW_WIDTH - PLAYER_WIDTH/2 - 10;
 
     if (!player) return entities;
 
@@ -55,7 +58,7 @@ const MoveSystem = (entities, { touches, events = [], dispatch }) => {
     // Move player
     const newX = currentX + (PLAYER_SPEED * entities.player.direction);
     Matter.Body.setPosition(player, {
-        x: newX,
+        x: Math.max(LEFT_BOUNDARY, Math.min(RIGHT_BOUNDARY, newX)),
         y: player.position.y
     });
 
