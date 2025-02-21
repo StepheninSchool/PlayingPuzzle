@@ -5,6 +5,12 @@ let isScoring = false; // Flag to check if scoring condition is met
 let scoreTimeout; // Timeout for scoring
 let keyPressed = {};
 
+const PLAYER_SPEED = 2;
+const MOVEMENT_RANGE = 150;
+const CENTER_X = 200; // Match enemy's center position
+const LEFT_BOUNDARY = CENTER_X - MOVEMENT_RANGE;
+const RIGHT_BOUNDARY = CENTER_X + MOVEMENT_RANGE;
+
 const MoveSystem = (entities, { touches, events = [], dispatch }) => {
     let player = entities.player.body;
     let enemy = entities.enemy.body;
@@ -20,37 +26,38 @@ const MoveSystem = (entities, { touches, events = [], dispatch }) => {
         dispatch({ type: "game-over" });
     }
 
-    // Handle keyboard events
+    // Handle keyboard events for jumping only
     if (events.length) {
         events.forEach((e) => {
             if (e.type === "keydown") {
-                keyPressed[e.key] = true;
-                
-                // Jump with spacebar
                 if (e.key === " " || e.key === "Spacebar") {
                     Matter.Body.setVelocity(player, { x: player.velocity.x, y: -10 });
-                }
-                
-                // Move left with left arrow
-                if (e.key === "ArrowLeft") {
-                    Matter.Body.setVelocity(player, { x: -3, y: player.velocity.y });
-                }
-                
-                // Move right with right arrow
-                if (e.key === "ArrowRight") {
-                    Matter.Body.setVelocity(player, { x: 3, y: player.velocity.y });
-                }
-            }
-            if (e.type === "keyup") {
-                keyPressed[e.key] = false;
-                
-                // Stop horizontal movement when arrow keys are released
-                if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                    Matter.Body.setVelocity(player, { x: 0, y: player.velocity.y });
                 }
             }
         });
     }
+
+    // Automatic horizontal movement
+    const currentX = player.position.x;
+
+    // Make sure direction is initialized
+    if (!entities.player.direction) {
+        entities.player.direction = 1;
+    }
+
+    // Change direction at boundaries
+    if (currentX >= RIGHT_BOUNDARY && entities.player.direction > 0) {
+        entities.player.direction = -1;
+    } else if (currentX <= LEFT_BOUNDARY && entities.player.direction < 0) {
+        entities.player.direction = 1;
+    }
+
+    // Move player
+    const newX = currentX + (PLAYER_SPEED * entities.player.direction);
+    Matter.Body.setPosition(player, {
+        x: newX,
+        y: player.position.y
+    });
 
     // Check victory condition
     const playerX = player.position.x;

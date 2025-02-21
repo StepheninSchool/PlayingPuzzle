@@ -12,6 +12,19 @@ const createWorld = () => {
     });
     let world = engine.world;
 
+    // Create borders
+    let leftBorder = Matter.Bodies.rectangle(0, 300, 20, 600, {
+        isStatic: true,
+        label: "Border",
+        friction: 0.3,
+    });
+
+    let rightBorder = Matter.Bodies.rectangle(400, 300, 20, 600, {
+        isStatic: true,
+        label: "Border",
+        friction: 0.3,
+    });
+
     let floor = Matter.Bodies.rectangle(200, 600, 400, 40, {
         isStatic: true,
         label: "Floor",
@@ -28,7 +41,7 @@ const createWorld = () => {
         restitution: 0,
     });
 
-    Matter.World.add(world, [floor, player.body, enemy]);
+    Matter.World.add(world, [floor, player.body, enemy, leftBorder, rightBorder]);
 
     // Goal area dimensions
     const goalPosition = { x: 300, y: 100 }; // Right upper area
@@ -37,8 +50,15 @@ const createWorld = () => {
     return {
         physics: { engine, world },
         floor: { body: floor, renderer: Floor },
-        player: { body: player.body, renderer: Player, size: [40, 40] },
-        enemy: { body: enemy, renderer: Enemy, direction: 1 }, // direction: 1 for right, -1 for left
+        leftBorder: { body: leftBorder, renderer: Floor },
+        rightBorder: { body: rightBorder, renderer: Floor },
+        player: { 
+            body: player.body, 
+            renderer: Player, 
+            size: [40, 40],
+            direction: 1  // Add initial direction for player
+        },
+        enemy: { body: enemy, renderer: Enemy, direction: 1 },
         goalArea: { 
             position: goalPosition, 
             size: goalSize,
