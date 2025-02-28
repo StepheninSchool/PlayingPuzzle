@@ -1,11 +1,10 @@
 import Matter from "matter-js";
 
 const Physics = (entities, { time }) => {
-    let engine = entities?.physics?.engine;
+    const { engine } = entities.physics;
     
-    if (engine) {
-        Matter.Engine.update(engine, time.delta);
-    }
+    // Update physics engine
+    Matter.Engine.update(engine, time.delta);
     
     return entities;
 };

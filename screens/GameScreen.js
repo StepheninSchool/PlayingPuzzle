@@ -4,75 +4,54 @@ import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
 import MoveSystem from "../systems/MoveSystem";
-import EnemySystem from "../systems/EnemySystem";
+import HoleSystem from "../systems/HoleSystem";
 
 const GameScreen = () => {
-    const [score, setScore] = useState(0);
-    const [isVictory, setIsVictory] = useState(false);
-    const [isDead, setIsDead] = useState(false);
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
-    const world = createWorld();
+    const [isVictory, setIsVictory] = useState(false);
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (gameEngine && !e.repeat) {
-                if (isDead && e.key === " ") {
-                    // Restart game on spacebar when dead
-                    setIsDead(false);
-                    setRunning(true);
-                    gameEngine.swap(createWorld());
-                } else {
-                    gameEngine.dispatch({ type: "keydown", key: e.key });
-                }
+        setRunning(true);
+
+        // Add mouse event listeners
+        const handleMouseEvent = (event) => {
+            if (gameEngine && gameEngine.dispatch) {
+                gameEngine.dispatch(event);
             }
         };
 
-        const handleKeyUp = (e) => {
-            if (gameEngine) {
-                gameEngine.dispatch({ type: "keyup", key: e.key });
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("keyup", handleKeyUp);
+        document.addEventListener('mousedown', handleMouseEvent);
+        document.addEventListener('mousemove', handleMouseEvent);
+        document.addEventListener('mouseup', handleMouseEvent);
 
         return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("keyup", handleKeyUp);
+            document.removeEventListener('mousedown', handleMouseEvent);
+            document.removeEventListener('mousemove', handleMouseEvent);
+            document.removeEventListener('mouseup', handleMouseEvent);
         };
-    }, [gameEngine, isDead]);
+    }, [gameEngine]);
 
     const onEvent = (event) => {
         if (event.type === "victory") {
             setIsVictory(true);
             setRunning(false);
-        } else if (event.type === "game-over") {
-            setIsDead(true);
-            setRunning(false);
         }
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             <GameEngine
                 ref={(ref) => setGameEngine(ref)}
-                style={{ flex: 1, backgroundColor: "black" }}
-                systems={[Physics, MoveSystem, EnemySystem]}
-                entities={world}
+                style={styles.gameContainer}
+                systems={[Physics, MoveSystem, HoleSystem]}
+                entities={createWorld()}
                 running={running}
                 onEvent={onEvent}
             />
             {isVictory && (
                 <View style={styles.messageContainer}>
-                    <Text style={styles.victoryText}>Congratulations!</Text>
-                    <Text style={styles.victorySubText}>You Win! 🎉</Text>
-                </View>
-            )}
-            {isDead && (
-                <View style={styles.messageContainer}>
-                    <Text style={styles.gameOverText}>You're Dead!</Text>
-                    <Text style={styles.gameOverSubText}>Press SPACE to restart</Text>
+                    <Text style={styles.victoryText}>You Win! 🎉</Text>
                 </View>
             )}
         </View>
@@ -80,6 +59,13 @@ const GameScreen = () => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#87CEEB',
+    },
+    gameContainer: {
+        flex: 1,
+    },
     messageContainer: {
         position: 'absolute',
         top: '40%',
@@ -93,24 +79,6 @@ const styles = StyleSheet.create({
         color: 'gold',
         fontSize: 32,
         fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    victorySubText: {
-        color: 'white',
-        fontSize: 24,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    gameOverText: {
-        color: 'red',
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    gameOverSubText: {
-        color: 'white',
-        fontSize: 24,
-        marginTop: 10,
         textAlign: 'center',
     },
 });

@@ -5,71 +5,73 @@ let isScoring = false; // Flag to check if scoring condition is met
 let scoreTimeout; // Timeout for scoring
 let keyPressed = {};
 
-const PLAYER_SPEED = 2;
-const MOVEMENT_RANGE = 300; // Increased range for wider screen
-const PLAYER_WIDTH = 40; // Player width for boundary calculations
+const PLAYER_SPEED = 3; // Increased speed for visibility
+const PLAYER_WIDTH = 40;
+const JUMP_FORCE = -12; // Stronger jump force for getting over the cube
 
-const MoveSystem = (entities, { touches, events = [], dispatch }) => {
-    let player = entities.player.body;
-    let enemy = entities.enemy.body;
-    let goalArea = entities.goalArea;
-    const WINDOW_WIDTH = entities.windowWidth;
+const MoveSystem = (entities, { time, dispatch }) => {
+    const player = entities.player;
+    const hole = entities.hole;
+    const goalArea = entities.goalArea;
+    const draggableCube = entities.draggableCube;
     
-    // Calculate boundaries based on window width
-    const LEFT_BOUNDARY = PLAYER_WIDTH/2 + 10; // Add small offset from border
-    const RIGHT_BOUNDARY = WINDOW_WIDTH - PLAYER_WIDTH/2 - 10;
+    if (!player?.body) return entities;
 
-    if (!player) return entities;
+    const LEFT_BOUNDARY = 50;
+    const RIGHT_BOUNDARY = entities.windowWidth - 50;
 
-    // Check collision with enemy
-    const playerBounds = player.bounds;
-    const enemyBounds = enemy.bounds;
-
-    if (Matter.Bounds.overlaps(playerBounds, enemyBounds)) {
-        dispatch({ type: "game-over" });
-    }
-
-    // Handle keyboard events for jumping only
-    if (events.length) {
-        events.forEach((e) => {
-            if (e.type === "keydown") {
-                if (e.key === " " || e.key === "Spacebar") {
-                    Matter.Body.setVelocity(player, { x: player.velocity.x, y: -10 });
-                }
-            }
-        });
-    }
-
-    // Automatic horizontal movement
-    const currentX = player.position.x;
-
-    // Make sure direction is initialized
-    if (!entities.player.direction) {
-        entities.player.direction = 1;
-    }
+    // Update player position
+    const currentX = player.body.position.x;
 
     // Change direction at boundaries
-    if (currentX >= RIGHT_BOUNDARY && entities.player.direction > 0) {
-        entities.player.direction = -1;
-    } else if (currentX <= LEFT_BOUNDARY && entities.player.direction < 0) {
-        entities.player.direction = 1;
+    if (currentX >= RIGHT_BOUNDARY && player.direction === 1) {
+        player.direction = -1;
+    } else if (currentX <= LEFT_BOUNDARY && player.direction === -1) {
+        player.direction = 1;
     }
 
     // Move player
-    const newX = currentX + (PLAYER_SPEED * entities.player.direction);
-    Matter.Body.setPosition(player, {
-        x: Math.max(LEFT_BOUNDARY, Math.min(RIGHT_BOUNDARY, newX)),
-        y: player.position.y
+    Matter.Body.setVelocity(player.body, {
+        x: PLAYER_SPEED * player.direction,
+        y: player.body.velocity.y
     });
 
+    // Check for collision with draggable cube
+    const cubeX = draggableCube.position?.x || draggableCube.initialPosition.x;
+    const cubeY = draggableCube.position?.y || draggableCube.initialPosition.y;
+    const playerX = player.body.position.x;
+    const playerY = player.body.position.y;
+
+    // Calculate distance between player and cube
+    const distance = Math.sqrt(
+        Math.pow(playerX - cubeX, 2) + 
+        Math.pow(playerY - cubeY, 2)
+    );
+
+    // If player is close to the cube and not already jumping
+    if (distance < 60 && player.body.velocity.y >= 0) {
+        Matter.Body.setVelocity(player.body, {
+            x: player.body.velocity.x,
+            y: JUMP_FORCE
+        });
+    }
+
+    // Check for hole collision if hole is not filled
+    if (!hole.isFilled) {
+        const playerX = player.body.position.x;
+        const holeX = hole.position.x;
+        
+        if (Math.abs(playerX - holeX) < 30 && 
+            player.body.position.y > hole.position.y - 20) {
+            Matter.Body.setPosition(player.body, {
+                x: 100,
+                y: 500
+            });
+        }
+    }
+
     // Check victory condition
-    const playerX = player.position.x;
-    const playerY = player.position.y;
-    
-    if (playerX >= goalArea.position.x && 
-        playerX <= goalArea.position.x + goalArea.size.width &&
-        playerY >= goalArea.position.y && 
-        playerY <= goalArea.position.y + goalArea.size.height) {
+    if (Matter.Bounds.overlaps(player.body.bounds, goalArea.body.bounds)) {
         dispatch({ type: "victory" });
     }
 
