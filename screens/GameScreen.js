@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { View, Text, StyleSheet, Platform, ImageBackground, SafeAreaView } from "react-native";
+=======
+import { View, Text, StyleSheet, Platform } from "react-native";
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
 =======
 import { View, Text, StyleSheet, Platform } from "react-native";
 >>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
@@ -48,6 +52,7 @@ const GameScreen = () => {
 
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <ImageBackground
             source={require('../assets/background.png')}
             style={styles.backgroundImage}
@@ -76,6 +81,8 @@ const GameScreen = () => {
             </SafeAreaView>
         </ImageBackground>
 =======
+=======
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
         <View style={styles.container}>
             <GameEngine
                 ref={(ref) => setGameEngine(ref)}
@@ -91,6 +98,9 @@ const GameScreen = () => {
                 </View>
             )}
         </View>
+<<<<<<< HEAD
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
+=======
 >>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
     );
 };
@@ -98,6 +108,7 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
         backgroundColor: 'transparent',
     },
@@ -114,6 +125,9 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2
+=======
+        backgroundColor: '#87CEEB',
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
 =======
         backgroundColor: '#87CEEB',
 >>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
