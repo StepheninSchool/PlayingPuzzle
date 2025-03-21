@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Platform, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Platform, ImageBackground, SafeAreaView } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
@@ -48,7 +48,12 @@ const GameScreen = () => {
             style={styles.backgroundImage}
             resizeMode="cover"
         >
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
+                {/* Level Header */}
+                <View style={styles.headerContainer}>
+                    <Text style={styles.levelText}>Level 1</Text>
+                </View>
+                
                 <GameEngine
                     ref={(ref) => setGameEngine(ref)}
                     style={styles.gameContainer}
@@ -57,12 +62,13 @@ const GameScreen = () => {
                     running={running}
                     onEvent={onEvent}
                 />
+                
                 {isVictory && (
                     <View style={styles.messageContainer}>
                         <Text style={styles.victoryText}>You Win! 🎉</Text>
                     </View>
                 )}
-            </View>
+            </SafeAreaView>
         </ImageBackground>
     );
 };
@@ -75,7 +81,21 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: 'transparent', // Changed from '#87CEEB' to transparent
+        backgroundColor: 'transparent',
+    },
+    headerContainer: {
+        paddingTop: 10,
+        paddingBottom: 5,
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    levelText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2
     },
     gameContainer: {
         flex: 1,
