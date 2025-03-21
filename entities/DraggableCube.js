@@ -2,11 +2,17 @@ import React from 'react';
 import { View } from 'react-native';
 
 const DraggableCube = (props) => {
-    const width = props.size.width;
-    const height = props.size.height;
-    const x = props.position?.x || props.initialPosition.x;
-    const y = props.position?.y || props.initialPosition.y;
-    const isDragging = props.isDragging;
+    // Handle cases where props or size might be undefined
+    const size = props.size || { width: 40, height: 40 };
+    const width = size.width;
+    const height = size.height;
+    
+    // Handle position safely
+    const position = props.position || props.initialPosition || { x: 100, y: 100 };
+    const x = position.x;
+    const y = position.y;
+    
+    const isDragging = props.isDragging || false;
 
     return (
         <View

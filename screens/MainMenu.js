@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function MainMenu({ navigation }) {
+  useEffect(() => {
+    console.log('MainMenu component mounted');
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Puzzle Game</Text>

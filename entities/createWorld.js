@@ -6,10 +6,12 @@ import GoalArea from "./GoalArea";
 import Enemy from "./Enemy";
 import Hole from "./Hole";
 import DraggableCube from "./DraggableCube";
+import { createDraggableCube } from './createDraggableCube';
 
 const createWorld = () => {
-    const WINDOW_WIDTH = window.innerWidth;
-    const WINDOW_HEIGHT = window.innerHeight;
+    // Check if window is defined (for SSR and React Native)
+    const WINDOW_WIDTH = typeof window !== 'undefined' ? window.innerWidth : 800;
+    const WINDOW_HEIGHT = typeof window !== 'undefined' ? window.innerHeight : 600;
     
     let engine = Matter.Engine.create({ 
         enableSleeping: false,
@@ -84,6 +86,8 @@ const createWorld = () => {
         goalBody
     ]);
 
+    const draggableCube = createDraggableCube({ position: { x: 100, y: 100 } });
+
     return {
         physics: { engine, world },
         leftFloor: { body: leftFloor, renderer: Floor },
@@ -114,13 +118,7 @@ const createWorld = () => {
             renderer: Hole,
             isFilled: false
         },
-        draggableCube: {
-            position: null,
-            initialPosition: { x: 150, y: 450 },
-            size: { width: 40, height: 40 },
-            renderer: DraggableCube,
-            isDragging: false
-        },
+        draggableCube,
         windowWidth: WINDOW_WIDTH,
         windowHeight: WINDOW_HEIGHT
     };

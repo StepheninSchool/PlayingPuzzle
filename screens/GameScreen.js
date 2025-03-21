@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
@@ -14,22 +14,25 @@ const GameScreen = () => {
     useEffect(() => {
         setRunning(true);
 
-        // Add mouse event listeners
-        const handleMouseEvent = (event) => {
-            if (gameEngine && gameEngine.dispatch) {
-                gameEngine.dispatch(event);
-            }
-        };
+        // Only add browser event listeners if we're in a browser environment
+        if (typeof document !== 'undefined') {
+            // Add mouse event listeners
+            const handleMouseEvent = (event) => {
+                if (gameEngine && gameEngine.dispatch) {
+                    gameEngine.dispatch(event);
+                }
+            };
 
-        document.addEventListener('mousedown', handleMouseEvent);
-        document.addEventListener('mousemove', handleMouseEvent);
-        document.addEventListener('mouseup', handleMouseEvent);
+            document.addEventListener('mousedown', handleMouseEvent);
+            document.addEventListener('mousemove', handleMouseEvent);
+            document.addEventListener('mouseup', handleMouseEvent);
 
-        return () => {
-            document.removeEventListener('mousedown', handleMouseEvent);
-            document.removeEventListener('mousemove', handleMouseEvent);
-            document.removeEventListener('mouseup', handleMouseEvent);
-        };
+            return () => {
+                document.removeEventListener('mousedown', handleMouseEvent);
+                document.removeEventListener('mousemove', handleMouseEvent);
+                document.removeEventListener('mouseup', handleMouseEvent);
+            };
+        }
     }, [gameEngine]);
 
     const onEvent = (event) => {
