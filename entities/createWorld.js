@@ -13,6 +13,9 @@ const createWorld = () => {
     const WINDOW_WIDTH = typeof window !== 'undefined' ? window.innerWidth : 800;
     const WINDOW_HEIGHT = typeof window !== 'undefined' ? window.innerHeight : 600;
     
+    // Account for header height
+    const HEADER_OFFSET = 45; // Added to account for the "Level 1" header
+    
     let engine = Matter.Engine.create({ 
         enableSleeping: false,
         gravity: { x: 0, y: 0.8 }
@@ -86,7 +89,8 @@ const createWorld = () => {
         goalBody
     ]);
 
-    const draggableCube = createDraggableCube({ position: { x: 100, y: 100 } });
+    // Update position to account for header (y value increased by 100)
+    const draggableCube = createDraggableCube({ position: { x: 100, y: 150 } });
 
     return {
         physics: { engine, world },

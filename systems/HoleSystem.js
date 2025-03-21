@@ -2,8 +2,7 @@ const HoleSystem = (entities, { touches, events }) => {
     const draggableCube = entities.draggableCube;
     const hole = entities.hole;
     
-    // Get the header height to adjust coordinates (accounting for the "Level 1" header)
-    // Approximate header height based on the styles (padding + text size)
+    // Header offset value
     const HEADER_OFFSET = 45; // This accounts for the header container's height
 
     // Handle mouse events
@@ -15,9 +14,19 @@ const HoleSystem = (entities, { touches, events }) => {
                 const cubeX = draggableCube.position?.x || draggableCube.initialPosition.x;
                 const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
                 
-                // Check if mouse is within the cube bounds (increase detection area slightly)
-                if (Math.abs(mouseX - cubeX) < 40 && Math.abs(mouseY - cubeY) < 40) {
+                // Further increase hit detection area to make it very easy to grab the cube
+                const hitBoxWidth = 70;  // Increased from 60
+                const hitBoxHeight = 90; // Increased from 80
+                const offsetY = 0;       // Removed the bias since we adjusted the initial position
+                
+                // Debug to help diagnose (remove in production)
+                console.log(`Mouse: ${mouseX},${mouseY} - Cube: ${cubeX},${cubeY}`);
+                
+                // Check if mouse is within the cube's hitbox with improved detection
+                if (Math.abs(mouseX - cubeX) < hitBoxWidth/2 && 
+                    Math.abs(mouseY - (cubeY - offsetY)) < hitBoxHeight/2) {
                     draggableCube.isDragging = true;
+                    console.log("Cube grabbed"); // Debug
                     // Store the initial click offset to make dragging smoother
                     draggableCube.dragOffset = {
                         x: mouseX - cubeX,
@@ -50,9 +59,16 @@ const HoleSystem = (entities, { touches, events }) => {
             const cubeX = draggableCube.position?.x || draggableCube.initialPosition.x;
             const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
 
-            // Check if touch is within the cube bounds (increase detection area slightly)
-            if (Math.abs(touchX - cubeX) < 40 && Math.abs(touchY - cubeY) < 40) {
+            // Use same improved hit detection for touch events
+            const hitBoxWidth = 70;  // Increased from 60
+            const hitBoxHeight = 90; // Increased from 80
+            const offsetY = 0;       // Removed the bias since we adjusted the initial position
+            
+            // Check if touch is within the cube's hitbox
+            if (Math.abs(touchX - cubeX) < hitBoxWidth/2 && 
+                Math.abs(touchY - (cubeY - offsetY)) < hitBoxHeight/2) {
                 draggableCube.isDragging = true;
+                console.log("Cube touch-grabbed"); // Debug
                 // Store the initial touch offset
                 draggableCube.dragOffset = {
                     x: touchX - cubeX,
