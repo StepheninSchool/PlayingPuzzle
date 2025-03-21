@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { View, Text, StyleSheet, Platform, ImageBackground, SafeAreaView } from "react-native";
+=======
+import { View, Text, StyleSheet, Platform } from "react-native";
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
@@ -43,6 +47,7 @@ const GameScreen = () => {
     };
 
     return (
+<<<<<<< HEAD
         <ImageBackground
             source={require('../assets/background.png')}
             style={styles.backgroundImage}
@@ -70,17 +75,30 @@ const GameScreen = () => {
                 )}
             </SafeAreaView>
         </ImageBackground>
+=======
+        <View style={styles.container}>
+            <GameEngine
+                ref={(ref) => setGameEngine(ref)}
+                style={styles.gameContainer}
+                systems={[Physics, MoveSystem, HoleSystem]}
+                entities={createWorld()}
+                running={running}
+                onEvent={onEvent}
+            />
+            {isVictory && (
+                <View style={styles.messageContainer}>
+                    <Text style={styles.victoryText}>You Win! 🎉</Text>
+                </View>
+            )}
+        </View>
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
     );
 };
 
 const styles = StyleSheet.create({
-    backgroundImage: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
     container: {
         flex: 1,
+<<<<<<< HEAD
         backgroundColor: 'transparent',
     },
     headerContainer: {
@@ -96,6 +114,9 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2
+=======
+        backgroundColor: '#87CEEB',
+>>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
     },
     gameContainer: {
         flex: 1,
