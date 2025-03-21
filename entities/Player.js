@@ -15,7 +15,9 @@ const Player = (props) => {
                 top: y,
                 width: width,
                 height: height,
-                backgroundColor: "blue",
+                backgroundColor: "white",
+                borderWidth: 2,
+                borderColor: "#333", // Dark border to make it visible against light backgrounds
             }}
         />
     );

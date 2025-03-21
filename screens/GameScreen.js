@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet, Platform, ImageBackground } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
@@ -43,28 +43,39 @@ const GameScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <GameEngine
-                ref={(ref) => setGameEngine(ref)}
-                style={styles.gameContainer}
-                systems={[Physics, MoveSystem, HoleSystem]}
-                entities={createWorld()}
-                running={running}
-                onEvent={onEvent}
-            />
-            {isVictory && (
-                <View style={styles.messageContainer}>
-                    <Text style={styles.victoryText}>You Win! 🎉</Text>
-                </View>
-            )}
-        </View>
+        <ImageBackground
+            source={require('../assets/background.png')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
+            <View style={styles.container}>
+                <GameEngine
+                    ref={(ref) => setGameEngine(ref)}
+                    style={styles.gameContainer}
+                    systems={[Physics, MoveSystem, HoleSystem]}
+                    entities={createWorld()}
+                    running={running}
+                    onEvent={onEvent}
+                />
+                {isVictory && (
+                    <View style={styles.messageContainer}>
+                        <Text style={styles.victoryText}>You Win! 🎉</Text>
+                    </View>
+                )}
+            </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#87CEEB',
+        backgroundColor: 'transparent', // Changed from '#87CEEB' to transparent
     },
     gameContainer: {
         flex: 1,

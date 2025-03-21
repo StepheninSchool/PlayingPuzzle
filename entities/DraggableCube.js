@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 
 const DraggableCube = (props) => {
     // Handle cases where props or size might be undefined
@@ -25,11 +25,14 @@ const DraggableCube = (props) => {
                 backgroundColor: 'brown',
                 borderWidth: 2,
                 borderColor: '#654321',
-                cursor: 'grab',
-                boxShadow: isDragging ? '0px 0px 10px rgba(0,0,0,0.5)' : '0px 0px 5px rgba(0,0,0,0.3)',
-                transform: isDragging ? 'scale(1.05)' : 'scale(1)',
-                transition: 'transform 0.1s, box-shadow 0.1s',
-                zIndex: isDragging ? 1000 : 1
+                // Web-specific styles that have fallbacks
+                ...(Platform.OS === 'web' ? {
+                    cursor: 'grab',
+                    boxShadow: isDragging ? '0px 0px 10px rgba(0,0,0,0.5)' : '0px 0px 5px rgba(0,0,0,0.3)',
+                    transform: isDragging ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'transform 0.1s, box-shadow 0.1s',
+                    zIndex: isDragging ? 1000 : 1
+                } : {})
             }}
         />
     );
