@@ -123,8 +123,8 @@ const createWorld = () => {
             isFilled: false
         },
         draggableCube,
-        windowWidth: WINDOW_WIDTH,
-        windowHeight: WINDOW_HEIGHT
+        // windowWidth: WINDOW_WIDTH,
+        // windowHeight: WINDOW_HEIGHT
     };
 };
 
