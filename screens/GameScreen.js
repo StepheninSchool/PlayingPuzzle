@@ -114,7 +114,22 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: 'bold',
         textAlign: 'center',
+        marginBottom: 20,
     },
+    nextLevelButton: {
+        backgroundColor: '#4CAF50',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    nextLevelText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    }
+    
+
 });
 
 export default GameScreen;
