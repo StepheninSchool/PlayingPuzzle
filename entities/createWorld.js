@@ -124,8 +124,8 @@ const createWorld = (level = 1) => {
                 isFilled: false
             },
             draggableCube,
-            windowWidth: WINDOW_WIDTH,
-            windowHeight: WINDOW_HEIGHT
+            // windowWidth: WINDOW_WIDTH,
+            // windowHeight: WINDOW_HEIGHT
         };
     } else if (level === 2) {
         // Level 2 setup - similar to level 1 with some variations
