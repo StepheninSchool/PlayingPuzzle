@@ -13,11 +13,7 @@ const createWorld = (level = 1) => {
     const WINDOW_WIDTH = typeof window !== 'undefined' ? window.innerWidth : 800;
     const WINDOW_HEIGHT = typeof window !== 'undefined' ? window.innerHeight : 600;
     
-
     // No need for header offset since the level indicator is now on the left side
-
-   
-
     
     let engine = Matter.Engine.create({ 
         enableSleeping: false,
@@ -165,7 +161,6 @@ const createWorld = (level = 1) => {
         // Create two enemies
         let enemy1 = Matter.Bodies.rectangle(WINDOW_WIDTH / 3, 300, 40, 40, {
             isStatic: true,
-
             label: "Enemy",
         });
         
@@ -249,64 +244,6 @@ const createWorld = (level = 1) => {
             windowHeight: WINDOW_HEIGHT
         };
     }
-
-            label: "Goal",
-            isSensor: true
-        }
-    );
-
-    // Add hole in the middle of the floor
-    const holePosition = { x: WINDOW_WIDTH / 2, y: 530 };
-    const holeSize = { width: 60, height: 20 };
-
-    Matter.World.add(world, [
-        leftFloor,
-        rightFloor,
-        player,
-        enemy,
-        leftBorder,
-        rightBorder,
-        goalBody
-    ]);
-
-    // Update position to account for header (y value increased by 100)
-    const draggableCube = createDraggableCube({ position: { x: 100, y: 150 } });
-
-    return {
-        physics: { engine, world },
-        leftFloor: { body: leftFloor, renderer: Floor },
-        rightFloor: { body: rightFloor, renderer: Floor },
-        leftBorder: { body: leftBorder, renderer: Floor },
-        rightBorder: { body: rightBorder, renderer: Floor },
-        player: { 
-            body: player, 
-            renderer: Player, 
-            size: [40, 40],
-            direction: 1,
-            velocity: 3
-        },
-        enemy: { 
-            body: enemy, 
-            renderer: Enemy, 
-            direction: 1
-        },
-        goalArea: { 
-            body: goalBody,
-            position: goalPosition, 
-            size: goalSize,
-            renderer: GoalArea 
-        },
-        hole: {
-            position: holePosition,
-            size: holeSize,
-            renderer: Hole,
-            isFilled: false
-        },
-        draggableCube,
-        windowWidth: WINDOW_WIDTH,
-        windowHeight: WINDOW_HEIGHT
-    };
-
 };
 
 export default createWorld;
