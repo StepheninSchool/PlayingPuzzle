@@ -15,4 +15,4 @@ export const createDraggableCube = (position) => {
     };
 };
 
-document.addEventListener('mousedown', handleMouseEvent); 
+// document.addEventListener('mousedown', handleMouseEvent); 
