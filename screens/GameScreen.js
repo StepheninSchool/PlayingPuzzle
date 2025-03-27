@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { View, Text, StyleSheet, Platform, ImageBackground, SafeAreaView } from "react-native";
-=======
-import { View, Text, StyleSheet, Platform } from "react-native";
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
-=======
-import { View, Text, StyleSheet, Platform } from "react-native";
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
+import { View, Text, StyleSheet, Platform, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../entities/createWorld";
 import Physics from "../systems/Physics";
 import MoveSystem from "../systems/MoveSystem";
 import HoleSystem from "../systems/HoleSystem";
+import LevelData from "../levels/LevelData";
 
 const GameScreen = () => {
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
     const [isVictory, setIsVictory] = useState(false);
+    const [currentLevel, setCurrentLevel] = useState(1);
+    const [showNextButton, setShowNextButton] = useState(false);
+    
+    // Reset the game state when the level changes
+    useEffect(() => {
+        setRunning(true);
+        setIsVictory(false);
+        setShowNextButton(false);
+        
+        if (gameEngine) {
+            gameEngine.swap(createWorld(currentLevel));
+        }
+        
+        console.log(`Level ${currentLevel} loaded`);
+    }, [currentLevel]);
 
     useEffect(() => {
         setRunning(true);
@@ -42,6 +50,17 @@ const GameScreen = () => {
             };
         }
     }, [gameEngine]);
+    
+    // When user wins, show victory message and the next level button after a delay
+    useEffect(() => {
+        if (isVictory) {
+            const timer = setTimeout(() => {
+                setShowNextButton(true);
+            }, 1500); // Show the next level button after 1.5 seconds
+            
+            return () => clearTimeout(timer);
+        }
+    }, [isVictory]);
 
     const onEvent = (event) => {
         if (event.type === "victory") {
@@ -49,26 +68,41 @@ const GameScreen = () => {
             setRunning(false);
         }
     };
+    
+    const goToNextLevel = () => {
+        // Check if there is a next level
+        if (currentLevel < LevelData.length) {
+            setCurrentLevel(currentLevel + 1);
+        }
+    };
 
     return (
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         <ImageBackground
             source={require('../assets/background.png')}
             style={styles.backgroundImage}
             resizeMode="cover"
         >
             <SafeAreaView style={styles.container}>
+
+                {/* Left Side Level Header */}
+                <View style={styles.leftSideHeaderContainer}>
+                    <View style={styles.levelBadge}>
+                        <Text style={styles.levelText}>
+                            {LevelData[currentLevel - 1]?.name || `Level ${currentLevel}`}
+                        </Text>
+                    </View>
+
                 {/* Level Header */}
                 <View style={styles.headerContainer}>
-                    <Text style={styles.levelText}>Level 1</Text>
+
                 </View>
                 
                 <GameEngine
                     ref={(ref) => setGameEngine(ref)}
                     style={styles.gameContainer}
                     systems={[Physics, MoveSystem, HoleSystem]}
-                    entities={createWorld()}
+                    entities={createWorld(currentLevel)}
                     running={running}
                     onEvent={onEvent}
                 />
@@ -76,13 +110,21 @@ const GameScreen = () => {
                 {isVictory && (
                     <View style={styles.messageContainer}>
                         <Text style={styles.victoryText}>You Win! 🎉</Text>
+                        
+                        {showNextButton && currentLevel < LevelData.length && (
+                            <TouchableOpacity 
+                                style={styles.nextLevelButton}
+                                onPress={goToNextLevel}
+                            >
+                                <Text style={styles.nextLevelText}>Next Level</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 )}
             </SafeAreaView>
         </ImageBackground>
-=======
-=======
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
+
+
         <View style={styles.container}>
             <GameEngine
                 ref={(ref) => setGameEngine(ref)}
@@ -98,18 +140,38 @@ const GameScreen = () => {
                 </View>
             )}
         </View>
-<<<<<<< HEAD
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
-=======
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
+
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+        backgroundColor: 'transparent',
+    },
+    leftSideHeaderContainer: {
+        position: 'absolute',
+        left: 0,
+        top: 20,
+        zIndex: 10,
+    },
+    levelBadge: {
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+    levelText: {
+        fontSize: 20,
+
+
         backgroundColor: 'transparent',
     },
     headerContainer: {
@@ -120,17 +182,15 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: 24,
+
         fontWeight: 'bold',
         color: 'white',
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2
-=======
+        textShadowRadius: 2,
+
         backgroundColor: '#87CEEB',
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
-=======
-        backgroundColor: '#87CEEB',
->>>>>>> parent of 07962da (Refactor DraggableCube and GameScreen components for improved styling and functionality)
+
     },
     gameContainer: {
         flex: 1,
@@ -149,7 +209,20 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: 'bold',
         textAlign: 'center',
+        marginBottom: 20,
     },
+    nextLevelButton: {
+        backgroundColor: '#4CAF50',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    nextLevelText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    }
 });
 
 export default GameScreen;
