@@ -77,12 +77,14 @@ const GameScreen = () => {
     };
 
     return (
+
         <ImageBackground
             source={require('../assets/background.png')}
             style={styles.backgroundImage}
             resizeMode="cover"
         >
             <SafeAreaView style={styles.container}>
+
                 {/* Left Side Level Header */}
                 <View style={styles.leftSideHeaderContainer}>
                     <View style={styles.levelBadge}>
@@ -90,6 +92,10 @@ const GameScreen = () => {
                             {LevelData[currentLevel - 1]?.name || `Level ${currentLevel}`}
                         </Text>
                     </View>
+
+                {/* Level Header */}
+                <View style={styles.headerContainer}>
+
                 </View>
                 
                 <GameEngine
@@ -117,17 +123,31 @@ const GameScreen = () => {
                 )}
             </SafeAreaView>
         </ImageBackground>
+
+
+        <View style={styles.container}>
+            <GameEngine
+                ref={(ref) => setGameEngine(ref)}
+                style={styles.gameContainer}
+                systems={[Physics, MoveSystem, HoleSystem]}
+                entities={createWorld()}
+                running={running}
+                onEvent={onEvent}
+            />
+            {isVictory && (
+                <View style={styles.messageContainer}>
+                    <Text style={styles.victoryText}>You Win! 🎉</Text>
+                </View>
+            )}
+        </View>
+
     );
 };
 
 const styles = StyleSheet.create({
-    backgroundImage: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
     container: {
         flex: 1,
+
         backgroundColor: 'transparent',
     },
     leftSideHeaderContainer: {
@@ -150,11 +170,27 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: 20,
+
+
+        backgroundColor: 'transparent',
+    },
+    headerContainer: {
+        paddingTop: 10,
+        paddingBottom: 5,
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    levelText: {
+        fontSize: 24,
+
         fontWeight: 'bold',
         color: 'white',
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2
+        textShadowRadius: 2,
+
+        backgroundColor: '#87CEEB',
+
     },
     gameContainer: {
         flex: 1,

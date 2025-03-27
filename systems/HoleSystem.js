@@ -2,7 +2,9 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
     const draggableCube = entities.draggableCube;
     const hole = entities.hole;
     
+
     // No need for header offset since level is displayed on the left now
+
 
     // Handle mouse events
     if (events && events.length > 0) {
@@ -14,15 +16,22 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
                 const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
                 
                 // Further increase hit detection area to make it very easy to grab the cube
+
                 const hitBoxWidth = 70;  // Increased hit box width
                 const hitBoxHeight = 90; // Increased hit box height
+
+                
                 
                 // Debug to help diagnose (remove in production)
                 console.log(`Mouse: ${mouseX},${mouseY} - Cube: ${cubeX},${cubeY}`);
                 
                 // Check if mouse is within the cube's hitbox with improved detection
                 if (Math.abs(mouseX - cubeX) < hitBoxWidth/2 && 
+
                     Math.abs(mouseY - cubeY) < hitBoxHeight/2) {
+
+                  
+
                     draggableCube.isDragging = true;
                     console.log("Cube grabbed"); // Debug
                     // Store the initial click offset to make dragging smoother
@@ -69,12 +78,14 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
             const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
 
             // Use same improved hit detection for touch events
+
             const hitBoxWidth = 70;  // Increased hit box width
             const hitBoxHeight = 90; // Increased hit box height
             
             // Check if touch is within the cube's hitbox
             if (Math.abs(touchX - cubeX) < hitBoxWidth/2 && 
                 Math.abs(touchY - cubeY) < hitBoxHeight/2) {
+
                 draggableCube.isDragging = true;
                 console.log("Cube touch-grabbed"); // Debug
                 // Store the initial touch offset
