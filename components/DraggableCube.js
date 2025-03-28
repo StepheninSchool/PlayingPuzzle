@@ -5,12 +5,12 @@ const DraggableCube = (props) => {
     // Handle cases where props or body might be undefined
     const width = 40; // Width of the cube
     const height = 40; // Height of the cube
-
+    
     // Safely handle body position
     const position = props.body?.position || props.position || { x: 100, y: 100 };
     const x = position.x - width / 2; // Center the cube
     const y = position.y - height / 2; // Center the cube
-
+    
     const isDragging = props.isDragging || false;
 
     return (
@@ -38,4 +38,4 @@ const DraggableCube = (props) => {
     );
 };
 
-export default DraggableCube;
+export default DraggableCube; 

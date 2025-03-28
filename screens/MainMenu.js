@@ -8,7 +8,7 @@ export default function MainMenu({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/background1.png')}
+      source={require('../assets/background.png')}
       style={styles.backgroundImage}
       resizeMode="cover"
     >

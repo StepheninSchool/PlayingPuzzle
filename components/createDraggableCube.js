@@ -13,6 +13,4 @@ export const createDraggableCube = (position) => {
         position,
         renderer: <DraggableCube /> // Use the new DraggableCube component
     };
-};
-
-// document.addEventListener('mousedown', handleMouseEvent); 
+}; 
