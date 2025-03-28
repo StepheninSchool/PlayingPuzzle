@@ -11,7 +11,6 @@ const JUMP_FORCE = -12; // Stronger jump force for getting over the cube
 
 const MoveSystem = (entities, { time, dispatch }) => {
     const player = entities.player;
-    const hole = entities.hole;
     const goalArea = entities.goalArea;
     const draggableCube = entities.draggableCube;
     
@@ -54,20 +53,6 @@ const MoveSystem = (entities, { time, dispatch }) => {
             x: player.body.velocity.x,
             y: JUMP_FORCE
         });
-    }
-
-    // Check for hole collision if hole is not filled
-    if (!hole.isFilled) {
-        const playerX = player.body.position.x;
-        const holeX = hole.position.x;
-        
-        if (Math.abs(playerX - holeX) < 30 && 
-            player.body.position.y > hole.position.y - 20) {
-            Matter.Body.setPosition(player.body, {
-                x: 100,
-                y: 500
-            });
-        }
     }
 
     // Check victory condition

@@ -1,9 +1,6 @@
 const HoleSystem = (entities, { touches, events, dispatch }) => {
     const draggableCube = entities.draggableCube;
-    const hole = entities.hole;
     
-    // No need for header offset since level is displayed on the left now
-
     // Handle mouse events
     if (events && events.length > 0) {
         for (let event of events) {
@@ -38,20 +35,6 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
                     y: event.pageY - (draggableCube.dragOffset?.y || 0)
                 };
             } else if (event.type === "mouseup") {
-                if (draggableCube.isDragging) {
-                    const filled = checkAndSnapToHole(draggableCube, hole);
-                    
-                    // If the hole is filled, dispatch a victory event
-                    if (filled && !hole.isFilled) {
-                        hole.isFilled = true;
-                        // Allow a small delay for the cube to snap into place visually
-                        setTimeout(() => {
-                            if (dispatch) {
-                                dispatch({ type: "victory" });
-                            }
-                        }, 500);
-                    }
-                }
                 draggableCube.isDragging = false;
                 // Clear the drag offset
                 draggableCube.dragOffset = null;
@@ -90,20 +73,6 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
                 y: touch.event.pageY - (draggableCube.dragOffset?.y || 0)
             };
         } else if (touch.type === "end") {
-            if (draggableCube.isDragging) {
-                const filled = checkAndSnapToHole(draggableCube, hole);
-                
-                // If the hole is filled, dispatch a victory event
-                if (filled && !hole.isFilled) {
-                    hole.isFilled = true;
-                    // Allow a small delay for the cube to snap into place visually
-                    setTimeout(() => {
-                        if (dispatch) {
-                            dispatch({ type: "victory" });
-                        }
-                    }, 500);
-                }
-            }
             draggableCube.isDragging = false;
             // Clear the drag offset
             draggableCube.dragOffset = null;
@@ -111,29 +80,6 @@ const HoleSystem = (entities, { touches, events, dispatch }) => {
     }
 
     return entities;
-};
-
-// Helper function to check if cube should snap to hole
-const checkAndSnapToHole = (draggableCube, hole) => {
-    const cubeX = draggableCube.position.x;
-    const cubeY = draggableCube.position.y;
-    const holeX = hole.position.x;
-    const holeY = hole.position.y;
-
-    const distance = Math.sqrt(
-        Math.pow(cubeX - holeX, 2) + 
-        Math.pow(cubeY - holeY, 2)
-    );
-
-    if (distance < 50) {
-        draggableCube.position = {
-            x: holeX,
-            y: holeY
-        };
-        return true;
-    }
-    
-    return false;
 };
 
 export default HoleSystem; 

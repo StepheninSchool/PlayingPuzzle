@@ -4,7 +4,7 @@ import Player from "./Player";
 import Floor from "./Floor";
 import GoalArea from "./GoalArea";
 import Enemy from "./Enemy";
-import Hole from "./Hole";
+// import Hole from "./Hole";
 import DraggableCube from "./DraggableCube";
 import { createDraggableCube } from './createDraggableCube';
 
@@ -77,8 +77,8 @@ const createWorld = (level = 1) => {
         );
 
         // Add hole in the middle of the floor
-        const holePosition = { x: WINDOW_WIDTH / 2, y: 530 };
-        const holeSize = { width: 60, height: 20 };
+        // const holePosition = { x: WINDOW_WIDTH / 2, y: 530 };
+        // const holeSize = { width: 60, height: 20 };
 
         Matter.World.add(world, [
             leftFloor,
@@ -117,12 +117,12 @@ const createWorld = (level = 1) => {
                 size: goalSize,
                 renderer: GoalArea 
             },
-            hole: {
-                position: holePosition,
-                size: holeSize,
-                renderer: Hole,
-                isFilled: false
-            },
+            // hole: {
+            //     position: holePosition,
+            //     size: holeSize,
+            //     renderer: Hole,
+            //     isFilled: false
+            // },
             draggableCube,
             windowWidth: WINDOW_WIDTH,
             windowHeight: WINDOW_HEIGHT
@@ -185,8 +185,8 @@ const createWorld = (level = 1) => {
         );
 
         // Add hole in a different position
-        const holePosition = { x: WINDOW_WIDTH / 2, y: 440 };
-        const holeSize = { width: 60, height: 20 };
+        // const holePosition = { x: WINDOW_WIDTH / 2, y: 440 };
+        // const holeSize = { width: 60, height: 20 };
 
         Matter.World.add(world, [
             platformTop,
@@ -233,12 +233,12 @@ const createWorld = (level = 1) => {
                 size: goalSize,
                 renderer: GoalArea 
             },
-            hole: {
-                position: holePosition,
-                size: holeSize,
-                renderer: Hole,
-                isFilled: false
-            },
+            // hole: {
+            //     position: holePosition,
+            //     size: holeSize,
+            //     renderer: Hole,
+            //     isFilled: false
+            // },
             draggableCube,
             windowWidth: WINDOW_WIDTH,
             windowHeight: WINDOW_HEIGHT

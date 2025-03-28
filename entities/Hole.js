@@ -12,7 +12,7 @@ const Hole = (props) => {
                 top: position.y,
                 width: size.width,
                 height: size.height,
-                backgroundColor: "black",
+                backgroundColor: "white",
                 borderWidth: 2,
                 borderColor: "brown",
             }}
