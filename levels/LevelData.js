@@ -4,14 +4,20 @@ const LevelData = [
     {
         id: 1,
         name: "Level 1",
-        description: "Place the cube in the hole to proceed",
+        description: "Simple platform layout with basic mechanics",
         difficulty: "Easy"
     },
     {
         id: 2,
         name: "Level 2",
-        description: "More challenges ahead!",
+        description: "More complex platform layout with enemies",
         difficulty: "Medium"
+    },
+    {
+        id: 3,
+        name: "Level 3",
+        description: "Advanced platform layout with enemies",
+        difficulty: "Hard"
     }
 ];
 
