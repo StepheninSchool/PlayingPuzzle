@@ -18,6 +18,7 @@ const MoveSystem = (entities, { time, dispatch }) => {
 
     const LEFT_BOUNDARY = 50;
     const RIGHT_BOUNDARY = entities.windowWidth - 50;
+    const DEATH_Y = 600; // Y position where player dies
 
     // Update player position
     const currentX = player.body.position.x;
@@ -53,6 +54,11 @@ const MoveSystem = (entities, { time, dispatch }) => {
             x: player.body.velocity.x,
             y: JUMP_FORCE
         });
+    }
+
+    // Check death condition (player fell to bottom)
+    if (player.body.position.y > DEATH_Y) {
+        dispatch({ type: "death" });
     }
 
     // Check victory condition

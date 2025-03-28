@@ -11,6 +11,7 @@ const GameScreen = () => {
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
     const [isVictory, setIsVictory] = useState(false);
+    const [isDeath, setIsDeath] = useState(false);
     const [currentLevel, setCurrentLevel] = useState(1);
     const [showNextButton, setShowNextButton] = useState(false);
     
@@ -18,6 +19,7 @@ const GameScreen = () => {
     useEffect(() => {
         setRunning(true);
         setIsVictory(false);
+        setIsDeath(false);
         setShowNextButton(false);
         
         if (gameEngine) {
@@ -56,7 +58,7 @@ const GameScreen = () => {
         if (isVictory) {
             const timer = setTimeout(() => {
                 setShowNextButton(true);
-            }, 1500); // Show the next level button after 1.5 seconds
+            }, 1500);
             
             return () => clearTimeout(timer);
         }
@@ -66,6 +68,9 @@ const GameScreen = () => {
         if (event.type === "victory") {
             setIsVictory(true);
             setRunning(false);
+        } else if (event.type === "death") {
+            setIsDeath(true);
+            setRunning(false);
         }
     };
     
@@ -74,6 +79,10 @@ const GameScreen = () => {
         if (currentLevel < LevelData.length) {
             setCurrentLevel(currentLevel + 1);
         }
+    };
+
+    const restartLevel = () => {
+        setCurrentLevel(currentLevel); // This will trigger a reset of the current level
     };
 
     return (
@@ -113,6 +122,18 @@ const GameScreen = () => {
                                 <Text style={styles.nextLevelText}>Next Level</Text>
                             </TouchableOpacity>
                         )}
+                    </View>
+                )}
+
+                {isDeath && (
+                    <View style={styles.messageContainer}>
+                        <Text style={styles.deathText}>Game Over! 💀</Text>
+                        <TouchableOpacity 
+                            style={styles.restartButton}
+                            onPress={restartLevel}
+                        >
+                            <Text style={styles.restartText}>Try Again</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
             </SafeAreaView>
@@ -175,6 +196,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
     },
+    deathText: {
+        color: '#ff4444',
+        fontSize: 32,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
     nextLevelButton: {
         backgroundColor: '#4CAF50',
         paddingVertical: 12,
@@ -182,7 +210,19 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 10,
     },
+    restartButton: {
+        backgroundColor: '#ff4444',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginTop: 10,
+    },
     nextLevelText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    restartText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
