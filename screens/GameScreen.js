@@ -82,7 +82,16 @@ const GameScreen = () => {
     };
 
     const restartLevel = () => {
-        setCurrentLevel(currentLevel); // This will trigger a reset of the current level
+        // First reset the game state
+        setRunning(true);
+        setIsVictory(false);
+        setIsDeath(false);
+        setShowNextButton(false);
+        
+        // Then swap the world to reset the level
+        if (gameEngine) {
+            gameEngine.swap(createWorld(currentLevel));
+        }
     };
 
     return (
