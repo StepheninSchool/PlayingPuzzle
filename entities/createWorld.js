@@ -284,7 +284,7 @@ const createWorld = (level = 1) => {
         });
 
         // Create goal area at a different position
-        const goalPosition = { x: 80, y: 500 };
+        const goalPosition = { x: 40, y: 40 };
         const goalSize = { width: 40, height: 40 };
         const goalBody = Matter.Bodies.rectangle(
             goalPosition.x,
