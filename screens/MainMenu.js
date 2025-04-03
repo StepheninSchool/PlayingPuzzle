@@ -8,12 +8,12 @@ export default function MainMenu({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/background.png')}
+      source={require('../assets/background2.png')}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Puzzle Game</Text>
+        <Text style={styles.title}><strong>Playing Puzzle</strong>.</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GameScreen')}>
           <Text style={styles.buttonText}>Start Game</Text>
         </TouchableOpacity>
