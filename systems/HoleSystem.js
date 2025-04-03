@@ -1,10 +1,6 @@
-const HoleSystem = (entities, { touches, events }) => {
+const HoleSystem = (entities, { touches, events, dispatch }) => {
     const draggableCube = entities.draggableCube;
-    const hole = entities.hole;
     
-    // Header offset value
-    const HEADER_OFFSET = 45; // This accounts for the header container's height
-
     // Handle mouse events
     if (events && events.length > 0) {
         for (let event of events) {
@@ -15,16 +11,15 @@ const HoleSystem = (entities, { touches, events }) => {
                 const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
                 
                 // Further increase hit detection area to make it very easy to grab the cube
-                const hitBoxWidth = 70;  // Increased from 60
-                const hitBoxHeight = 90; // Increased from 80
-                const offsetY = 0;       // Removed the bias since we adjusted the initial position
+                const hitBoxWidth = 70;  // Increased hit box width
+                const hitBoxHeight = 90; // Increased hit box height
                 
                 // Debug to help diagnose (remove in production)
                 console.log(`Mouse: ${mouseX},${mouseY} - Cube: ${cubeX},${cubeY}`);
                 
                 // Check if mouse is within the cube's hitbox with improved detection
                 if (Math.abs(mouseX - cubeX) < hitBoxWidth/2 && 
-                    Math.abs(mouseY - (cubeY - offsetY)) < hitBoxHeight/2) {
+                    Math.abs(mouseY - cubeY) < hitBoxHeight/2) {
                     draggableCube.isDragging = true;
                     console.log("Cube grabbed"); // Debug
                     // Store the initial click offset to make dragging smoother
@@ -40,9 +35,6 @@ const HoleSystem = (entities, { touches, events }) => {
                     y: event.pageY - (draggableCube.dragOffset?.y || 0)
                 };
             } else if (event.type === "mouseup") {
-                if (draggableCube.isDragging) {
-                    checkAndSnapToHole(draggableCube, hole);
-                }
                 draggableCube.isDragging = false;
                 // Clear the drag offset
                 draggableCube.dragOffset = null;
@@ -60,13 +52,12 @@ const HoleSystem = (entities, { touches, events }) => {
             const cubeY = (draggableCube.position?.y || draggableCube.initialPosition.y);
 
             // Use same improved hit detection for touch events
-            const hitBoxWidth = 70;  // Increased from 60
-            const hitBoxHeight = 90; // Increased from 80
-            const offsetY = 0;       // Removed the bias since we adjusted the initial position
+            const hitBoxWidth = 70;  // Increased hit box width
+            const hitBoxHeight = 90; // Increased hit box height
             
             // Check if touch is within the cube's hitbox
             if (Math.abs(touchX - cubeX) < hitBoxWidth/2 && 
-                Math.abs(touchY - (cubeY - offsetY)) < hitBoxHeight/2) {
+                Math.abs(touchY - cubeY) < hitBoxHeight/2) {
                 draggableCube.isDragging = true;
                 console.log("Cube touch-grabbed"); // Debug
                 // Store the initial touch offset
@@ -82,9 +73,6 @@ const HoleSystem = (entities, { touches, events }) => {
                 y: touch.event.pageY - (draggableCube.dragOffset?.y || 0)
             };
         } else if (touch.type === "end") {
-            if (draggableCube.isDragging) {
-                checkAndSnapToHole(draggableCube, hole);
-            }
             draggableCube.isDragging = false;
             // Clear the drag offset
             draggableCube.dragOffset = null;
@@ -92,27 +80,6 @@ const HoleSystem = (entities, { touches, events }) => {
     }
 
     return entities;
-};
-
-// Helper function to check if cube should snap to hole
-const checkAndSnapToHole = (draggableCube, hole) => {
-    const cubeX = draggableCube.position.x;
-    const cubeY = draggableCube.position.y;
-    const holeX = hole.position.x;
-    const holeY = hole.position.y;
-
-    const distance = Math.sqrt(
-        Math.pow(cubeX - holeX, 2) + 
-        Math.pow(cubeY - holeY, 2)
-    );
-
-    if (distance < 50) {
-        draggableCube.position = {
-            x: holeX,
-            y: holeY
-        };
-        hole.isFilled = true;
-    }
 };
 
 export default HoleSystem; 

@@ -22,18 +22,16 @@ const DraggableCube = (props) => {
                 top: y - height / 2,
                 width: width,
                 height: height,
-                backgroundColor: 'orange',
-                borderWidth: 3,
+                backgroundColor: 'brown',
+                borderWidth: 2,
                 borderColor: '#654321',
-                borderRadius: 5,
+                // Web-specific styles that have fallbacks
                 ...(Platform.OS === 'web' ? {
                     cursor: 'grab',
-                    boxShadow: isDragging 
-                        ? '0px 0px 15px rgba(255,165,0,0.7)' 
-                        : '0px 0px 8px rgba(255,165,0,0.4)',
-                    transform: isDragging ? 'scale(1.1)' : 'scale(1)',
+                    boxShadow: isDragging ? '0px 0px 10px rgba(0,0,0,0.5)' : '0px 0px 5px rgba(0,0,0,0.3)',
+                    transform: isDragging ? 'scale(1.05)' : 'scale(1)',
                     transition: 'transform 0.1s, box-shadow 0.1s',
-                    zIndex: isDragging ? 1000 : 100
+                    zIndex: isDragging ? 1000 : 1
                 } : {})
             }}
         />
