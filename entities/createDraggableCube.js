@@ -1,5 +1,5 @@
 import React from 'react';
-import DraggableCube from './DraggableCube';
+import DraggableCube from '../components/DraggableCube';
 
 export const createDraggableCube = (props) => {
     return {

@@ -18,7 +18,14 @@ const LevelData = [
         name: "Level 3",
         description: "Advanced platform layout with enemies",
         difficulty: "Hard"
+    },
+    {
+        id: 4,
+        name: "Level 4",
+        description: "Challenging platform layout with traps and puzzles",
+        difficulty: "Hard"
     }
+    
 ];
 
 export default LevelData; 
