@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Platform, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import createWorld from "../entities/createWorld";
+import createWorld from "../components/createWorld";
 import Physics from "../systems/Physics";
 import MoveSystem from "../systems/MoveSystem";
 import HoleSystem from "../systems/HoleSystem";
@@ -121,7 +121,7 @@ const GameScreen = () => {
                 
                 {isVictory && (
                     <View style={styles.messageContainer}>
-                        <Text style={styles.victoryText}>You Win! 🎉</Text>
+                        <Text style={styles.victoryText}>Level Complete!</Text>
                         
                         {showNextButton && currentLevel < LevelData.length && (
                             <TouchableOpacity 
@@ -136,12 +136,12 @@ const GameScreen = () => {
 
                 {isDeath && (
                     <View style={styles.messageContainer}>
-                        <Text style={styles.deathText}>Game Over! 💀</Text>
+                        <Text style={styles.deathText}>Game Over!</Text>
                         <TouchableOpacity 
                             style={styles.restartButton}
                             onPress={restartLevel}
                         >
-                            <Text style={styles.restartText}>Try Again</Text>
+                            <Text style={styles.restartText}>Try Again ?</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -200,14 +200,14 @@ const styles = StyleSheet.create({
     },
     victoryText: {
         color: 'gold',
-        fontSize: 32,
+        fontSize: 38,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
     },
     deathText: {
         color: '#ff4444',
-        fontSize: 32,
+        fontSize: 38,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,

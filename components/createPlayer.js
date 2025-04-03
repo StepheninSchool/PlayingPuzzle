@@ -1,16 +1,12 @@
-import Matter from 'matter-js';
-import Player from './Player';
+import Matter from "matter-js";
 
-export const createPlayer = (playerData) => {
-  let body = Matter.Bodies.rectangle(playerData.position.x, playerData.position.y, 40, 40, {
-    label: 'player',
-    friction: 0.05,
-    restitution: 0.8
-  });
+export const createPlayer = (x, y, world) => {
+    const player = Matter.Bodies.rectangle(x, y, 40, 40, {
+        restitution: 0.4,
+        friction: 0.1,
+        frictionAir: 0.01,
+        label: "Player"
+    });
 
-  return {
-    body,
-    position: playerData.position,
-    renderer: <Player />
-  };
+    return player;
 };

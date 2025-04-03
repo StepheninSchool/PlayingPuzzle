@@ -1,5 +1,4 @@
-import React from 'react';
-import DraggableCube from '../components/DraggableCube';
+import DraggableCube from '../entities/DraggableCube';
 
 export const createDraggableCube = (props) => {
     return {

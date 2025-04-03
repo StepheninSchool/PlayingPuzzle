@@ -1,9 +1,9 @@
 import Matter from "matter-js";
 import { createPlayer } from "./createPlayer";
-import Player from "./Player";
-import Floor from "./Floor";
-import GoalArea from "./GoalArea";
-import Enemy from "./Enemy";
+import Player from "../entities/Player";
+import Floor from "../entities/Floor";
+import GoalArea from "../entities/GoalArea";
+import Enemy from "../entities/Enemy";
 import { createDraggableCube } from "./createDraggableCube";
 
 const createWorld = (level = 1) => {
