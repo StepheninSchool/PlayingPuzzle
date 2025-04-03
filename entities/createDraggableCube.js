@@ -7,6 +7,6 @@ export const createDraggableCube = (props) => {
         initialPosition: props.position || { x: 100, y: 100 },
         size: { width: 40, height: 40 },
         isDragging: false,
-        renderer: <DraggableCube />
+        renderer: DraggableCube  // This is the component that will be rendered
     };
-}; 
+};
