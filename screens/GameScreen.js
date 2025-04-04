@@ -8,7 +8,7 @@ import HoleSystem from "../systems/HoleSystem";
 import LevelData from "../levels/LevelData";
 import styles from "../styles/GameScreenStyles"; // Adjust the path as needed
 
-const GameScreen = ({ route }) => {
+const GameScreen = ({ route, navigation }) => { // Add navigation prop
     const { level } = route.params || { level: 1 }; // Get the level from route params, default to 1
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
@@ -133,6 +133,14 @@ const GameScreen = ({ route }) => {
                                 <Text style={styles.nextLevelText}>Next Level</Text>
                             </TouchableOpacity>
                         )}
+
+                        {/* Main Menu Button */}
+                        <TouchableOpacity 
+                            style={styles.mainMenuButton}
+                            onPress={() => navigation.navigate('MainMenu')}
+                        >
+                            <Text style={styles.mainMenuText}>Main Menu</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
 
@@ -143,7 +151,15 @@ const GameScreen = ({ route }) => {
                             style={styles.restartButton}
                             onPress={restartLevel}
                         >
-                            <Text style={styles.restartText}>Try Again ?</Text>
+                            <Text style={styles.restartText}>Try Again?</Text>
+                        </TouchableOpacity>
+
+                        {/* Main Menu Button */}
+                        <TouchableOpacity 
+                            style={styles.mainMenuButton}
+                            onPress={() => navigation.navigate('MainMenu')}
+                        >
+                            <Text style={styles.mainMenuText}>Main Menu</Text>
                         </TouchableOpacity>
                     </View>
                 )}

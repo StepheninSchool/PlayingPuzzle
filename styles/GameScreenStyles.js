@@ -36,6 +36,17 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
+  mainMenuButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 5,
+},
+mainMenuText: {
+    color: '#fff',
+    fontSize: 18,
+    textAlign: 'center',
+},
   gameContainer: {
     flex: 1,
   },
