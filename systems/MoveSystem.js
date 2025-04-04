@@ -6,19 +6,22 @@ let scoreTimeout; // Timeout for scoring
 let keyPressed = {};
 
 const PLAYER_SPEED = 3; // Increased speed for visibility
-const PLAYER_WIDTH = 40;
 const JUMP_FORCE = -12; // Stronger jump force for getting over the cube
 
+// Function to handle player movement and interactions
+// This function is called every frame to update the game state
 const MoveSystem = (entities, { time, dispatch }) => {
     const player = entities.player;
     const goalArea = entities.goalArea;
     const draggableCube = entities.draggableCube;
     
+    // Check if player exists and has a body
     if (!player?.body) return entities;
 
+    // define boundaries for player movement and game over condition
     const LEFT_BOUNDARY = 50;
     const RIGHT_BOUNDARY = entities.windowWidth - 50;
-    const DEATH_Y = 1000; // Y position where player dies
+    const DEATH_Y = 1500; // Y position where player dies
 
     // Update player position
     const currentX = player.body.position.x;
@@ -42,7 +45,9 @@ const MoveSystem = (entities, { time, dispatch }) => {
     if (entities.enemy2 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy2.body.bounds)) {
         player.direction = -player.direction;
     }
-    // Add additional enemy checks as needed...
+    if (entities.enemy3 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy3.body.bounds)) {
+        player.direction = -player.direction;
+    }
 
     // Move player horizontally with the updated direction
     Matter.Body.setVelocity(player.body, {
