@@ -2,10 +2,11 @@
 
 ## Project Overview
 
-PlayingPuzzle is a React Native video game prototype built using `react-native-game-engine` and `matter-js`. The game features multiple levels where players must navigate through obstacles, avoid enemies, and reach the goal to complete each level. The game supports touch gestures for interaction and is designed to run on mobile devices.
+-PlayingPuzzle is a React Native video game prototype built using `react-native-game-engine` and `matter-js`. The game features multiple levels where players must navigate through obstacles, avoid enemies, and reach the goal to complete each level. The game supports touch gestures for interaction and is designed to run on mobile devices.
 
-This document provides step-by-step instructions for setting up, running, and contributing to the project.
+-This document provides step-by-step instructions for setting up, running, and contributing to the project.
 
+- project created by @StepheninSchool
 ---
 
 ## Game Features
@@ -31,6 +32,7 @@ This document provides step-by-step instructions for setting up, running, and co
 
 - **Cross-Platform Support:**
   - Compatible with both mobile devices and web platforms.
+  - updated 3/28/25 - removed mobile support to focus on web support.
 
 ---
 
