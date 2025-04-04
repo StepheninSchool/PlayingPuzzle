@@ -1,4 +1,6 @@
-// LevelData.js - Contains configurations for different game levels
+/*This file contains the level data for the game.
+Each level has an id, name, description, and difficulty rating.
+This data can be used to load levels dynamically in the game.*/
 
 const LevelData = [
     {

@@ -11,8 +11,10 @@ const DraggableCube = (props) => {
     const x = position.x - width / 2; // Center the cube
     const y = position.y - height / 2; // Center the cube
     
+    // Handle cases where props might be undefined
     const isDragging = props.isDragging || false;
 
+    // return the cube with a default color and optional styles for web
     return (
         <View
             style={{
