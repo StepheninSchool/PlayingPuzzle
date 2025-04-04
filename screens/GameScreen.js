@@ -1,118 +1,171 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import createWorld from "../entities/createWorld";
+import createWorld from "../components/createWorld";
 import Physics from "../systems/Physics";
 import MoveSystem from "../systems/MoveSystem";
-import EnemySystem from "../systems/EnemySystem";
+import HoleSystem from "../systems/HoleSystem";
+import LevelData from "../levels/LevelData";
+import styles from "../styles/GameScreenStyles"; // Adjust the path as needed
 
-const GameScreen = () => {
-    const [score, setScore] = useState(0);
-    const [isVictory, setIsVictory] = useState(false);
-    const [isDead, setIsDead] = useState(false);
+const GameScreen = ({ route, navigation }) => { // Add navigation prop
+    const { level } = route.params || { level: 1 }; // Get the level from route params, default to 1
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
-    const world = createWorld();
+    const [isVictory, setIsVictory] = useState(false);
+    const [isDeath, setIsDeath] = useState(false);
+    const [currentLevel, setCurrentLevel] = useState(level); // Initialize with the selected level
+    const [showNextButton, setShowNextButton] = useState(false);
+    
+    // Reset the game state when the level changes
+    useEffect(() => {
+        setRunning(true);
+        setIsVictory(false);
+        setIsDeath(false);
+        setShowNextButton(false);
+        
+        if (gameEngine) {
+            gameEngine.swap(createWorld(currentLevel));
+        }
+        
+        console.log(`Level ${currentLevel} loaded`);
+    }, [currentLevel]);
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (gameEngine && !e.repeat) {
-                if (isDead && e.key === " ") {
-                    // Restart game on spacebar when dead
-                    setIsDead(false);
-                    setRunning(true);
-                    gameEngine.swap(createWorld());
-                } else {
-                    gameEngine.dispatch({ type: "keydown", key: e.key });
+        setRunning(true);
+
+        // Only add browser event listeners if we're in a browser environment
+        if (typeof document !== 'undefined') {
+            // Add mouse event listeners
+            const handleMouseEvent = (event) => {
+                if (gameEngine && gameEngine.dispatch) {
+                    gameEngine.dispatch(event);
                 }
-            }
-        };
+            };
 
-        const handleKeyUp = (e) => {
-            if (gameEngine) {
-                gameEngine.dispatch({ type: "keyup", key: e.key });
-            }
-        };
+            document.addEventListener('mousedown', handleMouseEvent);
+            document.addEventListener('mousemove', handleMouseEvent);
+            document.addEventListener('mouseup', handleMouseEvent);
 
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("keyup", handleKeyUp);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("keyup", handleKeyUp);
-        };
-    }, [gameEngine, isDead]);
+            return () => {
+                document.removeEventListener('mousedown', handleMouseEvent);
+                document.removeEventListener('mousemove', handleMouseEvent);
+                document.removeEventListener('mouseup', handleMouseEvent);
+            };
+        }
+    }, [gameEngine]);
+    
+    // When user wins, show victory message and the next level button after a delay
+    useEffect(() => {
+        if (isVictory) {
+            const timer = setTimeout(() => {
+                setShowNextButton(true);
+            }, 1500);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [isVictory]);
 
     const onEvent = (event) => {
         if (event.type === "victory") {
             setIsVictory(true);
             setRunning(false);
-        } else if (event.type === "game-over") {
-            setIsDead(true);
+        } else if (event.type === "death") {
+            setIsDeath(true);
             setRunning(false);
+        }
+    };
+    
+    const goToNextLevel = () => {
+        // Check if there is a next level
+        if (currentLevel < LevelData.length) {
+            setCurrentLevel(currentLevel + 1);
+        }
+    };
+
+    const restartLevel = () => {
+        // First reset the game state
+        setRunning(true);
+        setIsVictory(false);
+        setIsDeath(false);
+        setShowNextButton(false);
+        
+        // Then swap the world to reset the level
+        if (gameEngine) {
+            gameEngine.swap(createWorld(currentLevel));
         }
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <GameEngine
-                ref={(ref) => setGameEngine(ref)}
-                style={{ flex: 1, backgroundColor: "black" }}
-                systems={[Physics, MoveSystem, EnemySystem]}
-                entities={world}
-                running={running}
-                onEvent={onEvent}
-            />
-            {isVictory && (
-                <View style={styles.messageContainer}>
-                    <Text style={styles.victoryText}>Congratulations!</Text>
-                    <Text style={styles.victorySubText}>You Win! 🎉</Text>
+        <ImageBackground
+            source={require('../assets/background.png')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
+            <SafeAreaView style={styles.container}>
+                {/* Left Side Level Header */}
+                <View style={styles.leftSideHeaderContainer}>
+                    <View style={styles.levelBadge}>
+                        <Text style={styles.levelText}>
+                            {LevelData[currentLevel - 1]?.name || `Level ${currentLevel}`}
+                        </Text>
+                    </View>
                 </View>
-            )}
-            {isDead && (
-                <View style={styles.messageContainer}>
-                    <Text style={styles.gameOverText}>You're Dead!</Text>
-                    <Text style={styles.gameOverSubText}>Press SPACE to restart</Text>
-                </View>
-            )}
-        </View>
+                
+                <GameEngine
+                    ref={(ref) => setGameEngine(ref)}
+                    style={styles.gameContainer}
+                    systems={[Physics, MoveSystem, HoleSystem]}
+                    entities={createWorld(currentLevel)}
+                    running={running}
+                    onEvent={onEvent}
+                />
+                
+                {isVictory && (
+                    <View style={styles.messageContainer}>
+                        <Text style={styles.victoryText}>Level Complete!</Text>
+                        
+                        {showNextButton && currentLevel < LevelData.length && (
+                            <TouchableOpacity 
+                                style={styles.nextLevelButton}
+                                onPress={goToNextLevel}
+                            >
+                                <Text style={styles.nextLevelText}>Next Level</Text>
+                            </TouchableOpacity>
+                        )}
+
+                        {/* Main Menu Button */}
+                        <TouchableOpacity 
+                            style={styles.mainMenuButton}
+                            onPress={() => navigation.navigate('MainMenu')}
+                        >
+                            <Text style={styles.mainMenuText}>Main Menu</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {isDeath && (
+                    <View style={styles.messageContainer}>
+                        <Text style={styles.deathText}>Game Over!</Text>
+                        <TouchableOpacity 
+                            style={styles.restartButton}
+                            onPress={restartLevel}
+                        >
+                            <Text style={styles.restartText}>Try Again?</Text>
+                        </TouchableOpacity>
+
+                        {/* Main Menu Button */}
+                        <TouchableOpacity 
+                            style={styles.mainMenuButton}
+                            onPress={() => navigation.navigate('MainMenu')}
+                        >
+                            <Text style={styles.mainMenuText}>Main Menu</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </SafeAreaView>
+        </ImageBackground>
     );
 };
-
-const styles = StyleSheet.create({
-    messageContainer: {
-        position: 'absolute',
-        top: '40%',
-        left: 0,
-        right: 0,
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        padding: 20,
-    },
-    victoryText: {
-        color: 'gold',
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    victorySubText: {
-        color: 'white',
-        fontSize: 24,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    gameOverText: {
-        color: 'red',
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    gameOverSubText: {
-        color: 'white',
-        fontSize: 24,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-});
 
 export default GameScreen;
