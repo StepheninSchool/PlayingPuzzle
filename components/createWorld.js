@@ -22,38 +22,52 @@ const createWorld = (level = 1) => {
   let world = engine.world;
 
   // ---------------------------
-  // Collision Event Handler
-  // ---------------------------
-  // Listen for collision events so that we can modify the player's behavior.
-  Matter.Events.on(engine, "collisionStart", (event) => {
+// Collision Event Handler
+// ---------------------------
+Matter.Events.on(engine, "collisionStart", (event) => {
     event.pairs.forEach((pair) => {
       const { bodyA, bodyB } = pair;
-
-      // Enemy collision: When the player collides with an enemy,
-      // switch the player's horizontal direction (without bounce).
+  
+      // Enemy collision: When the player collides with an enemy.
       if (
         (bodyA.label === "Player" && bodyB.label === "Enemy") ||
         (bodyB.label === "Player" && bodyA.label === "Enemy")
       ) {
         const playerBody = bodyA.label === "Player" ? bodyA : bodyB;
-        const newDirection = playerBody.direction ? -playerBody.direction : -1;
-        playerBody.direction = newDirection;
-        // Set a default horizontal velocity based on the new direction.
-        Matter.Body.setVelocity(playerBody, {
-          x: newDirection * 3,
-          y: playerBody.velocity.y
-        });
+        const enemyBody = bodyA.label === "Enemy" ? bodyA : bodyB;
+        
+        // Calculate player's bottom and enemy's top assuming player's height is 40.
+        const playerBottom = playerBody.position.y + 20;
+        const enemyTop = enemyBody.position.y - 20;
+        
+        // If player's bottom is within 5 units of enemy's top, assume a top collision.
+        if (Math.abs(playerBottom - enemyTop) < 5) {
+          // Apply a slight upward bounce.
+          Matter.Body.setVelocity(playerBody, {
+            x: playerBody.velocity.x, // Keep horizontal velocity unchanged
+            y: -4 // Small upward impulse
+          });
+        } else {
+          // Otherwise, it's more of a side collision: reverse horizontal direction.
+          const newDirection = playerBody.direction ? -playerBody.direction : -1;
+          playerBody.direction = newDirection;
+          Matter.Body.setVelocity(playerBody, {
+            x: newDirection * 3,
+            y: playerBody.velocity.y
+          });
+        }
       }
-      // Draggable cube collision: Bounce effect when colliding with the cube.
+      // Draggable cube collision: Bounce effect.
       else if (
         (bodyA.label === "Player" && bodyB.label === "DraggableCube") ||
         (bodyB.label === "Player" && bodyA.label === "DraggableCube")
       ) {
         const playerBody = bodyA.label === "Player" ? bodyA : bodyB;
+        const bounceFactor = 0.5; // Adjust for a smaller bounce.
         const newVx =
           playerBody.velocity.x !== 0
-            ? -playerBody.velocity.x
-            : (playerBody.direction === 1 ? -3 : 3);
+            ? -playerBody.velocity.x * bounceFactor
+            : (playerBody.direction === 1 ? -3 : 3) * bounceFactor;
         Matter.Body.setVelocity(playerBody, {
           x: newVx,
           y: playerBody.velocity.y
@@ -61,6 +75,7 @@ const createWorld = (level = 1) => {
       }
     });
   });
+  
 
   // ---------------------------
   // Create Game Boundaries
