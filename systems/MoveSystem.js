@@ -37,6 +37,9 @@ const MoveSystem = (entities, { time, dispatch }) => {
     // If an enemy exists and the player's bounds overlap with its bounds, reverse direction.
     if (entities.enemy && Matter.Bounds.overlaps(player.body.bounds, entities.enemy.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
     // If there are multiple enemies, check each (if defined):
     if (entities.enemy1 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy1.body.bounds)) {
@@ -44,9 +47,15 @@ const MoveSystem = (entities, { time, dispatch }) => {
     }
     if (entities.enemy2 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy2.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
     if (entities.enemy3 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy3.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
 
     // Move player horizontally with the updated direction
@@ -72,6 +81,9 @@ const MoveSystem = (entities, { time, dispatch }) => {
             x: player.body.velocity.x,
             y: JUMP_FORCE
         });
+        if (player.sounds && player.sounds.jumpSound) {
+            player.sounds.jumpSound.playAsync(); // Play jump sound
+        }
     }
 
     // Check death condition (player fell too low)

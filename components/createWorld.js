@@ -7,7 +7,7 @@ import Enemy from "../entities/Enemy";
 import { createDraggableCube } from "./createDraggableCube";
 
 // createWorld builds the game world based on the level parameter.
-const createWorld = (level = 1) => {
+const createWorld = (level = 1,sounds) => {
   // Get window dimensions (use defaults if not available, e.g. in SSR)
   const WINDOW_WIDTH =
     typeof window !== "undefined" ? window.innerWidth : 800;
@@ -55,6 +55,11 @@ Matter.Events.on(engine, "collisionStart", (event) => {
             x: newDirection * 3,
             y: playerBody.velocity.y
           });
+          // Play the sound effect for enemy collision.
+          // Play collision sound
+          if (sounds && sounds.collisionSound) {
+            sounds.collisionSound.playAsync();
+        }
         }
       }
       // Draggable cube collision: Bounce effect.
@@ -174,7 +179,8 @@ Matter.Events.on(engine, "collisionStart", (event) => {
         renderer: Player,
         size: [40, 40],
         direction: 1,
-        velocity: 3
+        velocity: 3,
+        sounds
       },
       enemy: {
         body: enemy,
@@ -289,7 +295,8 @@ Matter.Events.on(engine, "collisionStart", (event) => {
         renderer: Player,
         size: [40, 40],
         direction: 1,
-        velocity: 3
+        velocity: 3,
+        sounds
       },
       enemy1: {
         body: enemy1,
@@ -409,7 +416,8 @@ Matter.Events.on(engine, "collisionStart", (event) => {
         renderer: Player,
         size: [40, 40],
         direction: 1,
-        velocity: 3
+        velocity: 3,
+        sounds
       },
       enemy1: {
         body: enemy1,
@@ -562,7 +570,8 @@ Matter.Events.on(engine, "collisionStart", (event) => {
         renderer: Player,
         size: [40, 40],
         direction: 1,
-        velocity: 3
+        velocity: 3,
+        sounds
       },
       enemy1: {
         body: enemy1,

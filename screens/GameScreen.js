@@ -7,6 +7,7 @@ import MoveSystem from "../systems/MoveSystem";
 import HoleSystem from "../systems/HoleSystem";
 import LevelData from "../levels/LevelData";
 import styles from "../styles/GameScreenStyles"; // Adjust the path as needed
+import { Audio } from 'expo-av'; // Import Audio from expo-av
 
 const GameScreen = ({ route, navigation }) => { // Add navigation prop
     const { level } = route.params || { level: 1 }; // Get the level from route params, default to 1
@@ -16,7 +17,34 @@ const GameScreen = ({ route, navigation }) => { // Add navigation prop
     const [isDeath, setIsDeath] = useState(false);
     const [currentLevel, setCurrentLevel] = useState(level); // Initialize with the selected level
     const [showNextButton, setShowNextButton] = useState(false);
+    const [sounds, setSounds] = useState({}); // State to manage sounds
     
+
+    // Load sounds when the component mounts
+    const loadSounds = async () => {
+        const jumpSound = new Audio.Sound();
+        const collisionSound = new Audio.Sound();
+        const victorySound = new Audio.Sound();
+        const deathSound = new Audio.Sound();
+
+        await jumpSound.loadAsync(require('../assets/sounds/jump.mp3'));
+        await collisionSound.loadAsync(require('../assets/sounds/collision.mp3'));
+        await victorySound.loadAsync(require('../assets/sounds/victory.mp3'));
+        await deathSound.loadAsync(require('../assets/sounds/death.mp3'));
+
+        setSounds({ jumpSound, collisionSound, victorySound, deathSound });
+    };
+
+    useEffect(() => {
+        loadSounds(); // Load sounds when the component mounts
+        return () => {
+            // Unload sounds when the component unmounts
+            Object.values(sounds).forEach(sound => {
+                sound.unloadAsync();
+            });
+        };
+    }, []);
+
     // Reset the game state when the level changes
     useEffect(() => {
         setRunning(true);
@@ -25,7 +53,7 @@ const GameScreen = ({ route, navigation }) => { // Add navigation prop
         setShowNextButton(false);
         
         if (gameEngine) {
-            gameEngine.swap(createWorld(currentLevel));
+            gameEngine.swap(createWorld(currentLevel, sounds)); // Pass sounds to the world
         }
         
         console.log(`Level ${currentLevel} loaded`);
@@ -70,9 +98,11 @@ const GameScreen = ({ route, navigation }) => { // Add navigation prop
         if (event.type === "victory") {
             setIsVictory(true);
             setRunning(false);
+            sounds.victorySound.playAsync(); // Play victory sound
         } else if (event.type === "death") {
             setIsDeath(true);
             setRunning(false);
+            sounds.deathSound.playAsync(); // Play death sound
         }
     };
     
@@ -92,7 +122,7 @@ const GameScreen = ({ route, navigation }) => { // Add navigation prop
         
         // Then swap the world to reset the level
         if (gameEngine) {
-            gameEngine.swap(createWorld(currentLevel));
+            gameEngine.swap(createWorld(currentLevel, sounds));
         }
     };
 
@@ -116,7 +146,7 @@ const GameScreen = ({ route, navigation }) => { // Add navigation prop
                     ref={(ref) => setGameEngine(ref)}
                     style={styles.gameContainer}
                     systems={[Physics, MoveSystem, HoleSystem]}
-                    entities={createWorld(currentLevel)}
+                    entities={createWorld(currentLevel, sounds)} // Pass sounds to the world
                     running={running}
                     onEvent={onEvent}
                 />
