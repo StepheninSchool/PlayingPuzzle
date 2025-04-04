@@ -6,14 +6,11 @@ import GoalArea from "../entities/GoalArea";
 import Enemy from "../entities/Enemy";
 import { createDraggableCube } from "./createDraggableCube";
 
-const createWorld = (level = 1) => {
+const createWorld = (level = 1, sounds) => {
     // Check if window is defined (for SSR and React Native)
-    const WINDOW_WIDTH =
-        typeof window !== "undefined" ? window.innerWidth : 800;
-    const WINDOW_HEIGHT =
-        typeof window !== "undefined" ? window.innerHeight : 600;
+    const WINDOW_WIDTH = typeof window !== "undefined" ? window.innerWidth : 800;
+    const WINDOW_HEIGHT = typeof window !== "undefined" ? window.innerHeight : 600;
 
-    // No need for header offset since the level indicator is now on the left side
     let engine = Matter.Engine.create({
         enableSleeping: false,
         gravity: { x: 0, y: 0.8 }
@@ -33,15 +30,19 @@ const createWorld = (level = 1) => {
                 (bodyB.label === "Player" && bodyA.label === "Enemy")
             ) {
                 const playerBody = bodyA.label === "Player" ? bodyA : bodyB;
-                const newDirection = playerBody.direction
-                    ? -playerBody.direction
-                    : -1;
+                const newDirection = playerBody.direction ? -playerBody.direction : -1;
                 playerBody.direction = newDirection;
+
                 // Set a default horizontal velocity based on the new direction.
                 Matter.Body.setVelocity(playerBody, {
                     x: newDirection * 3,
                     y: playerBody.velocity.y
                 });
+
+                // Play collision sound
+                if (sounds && sounds.collisionSound) {
+                    sounds.collisionSound.playAsync();
+                }
             }
             // If colliding with the draggable cube: bounce effect.
             else if (
@@ -49,10 +50,7 @@ const createWorld = (level = 1) => {
                 (bodyB.label === "Player" && bodyA.label === "DraggableCube")
             ) {
                 const playerBody = bodyA.label === "Player" ? bodyA : bodyB;
-                const newVx =
-                    playerBody.velocity.x !== 0
-                        ? -playerBody.velocity.x
-                        : (playerBody.direction === 1 ? -3 : 3);
+                const newVx = playerBody.velocity.x !== 0 ? -playerBody.velocity.x : (playerBody.direction === 1 ? -3 : 3);
                 Matter.Body.setVelocity(playerBody, {
                     x: newVx,
                     y: playerBody.velocity.y
@@ -97,7 +95,6 @@ const createWorld = (level = 1) => {
         );
 
         // Create player on top of the left floor.
-        // Floor top = 550 - (40/2) = 530, so player's center ≈ 510.
         let player = createPlayer(100, 510);
         Matter.Body.set(player, {
             friction: 0.1,
@@ -147,7 +144,8 @@ const createWorld = (level = 1) => {
                 renderer: Player,
                 size: [40, 40],
                 direction: 1,
-                velocity: 3
+                velocity: 3,
+                sounds // Pass sounds to player entity
             },
             enemy: {
                 body: enemy,
@@ -258,7 +256,8 @@ const createWorld = (level = 1) => {
                 renderer: Player,
                 size: [40, 40],
                 direction: 1,
-                velocity: 3
+                velocity: 3,
+                sounds // Pass sounds to player entity
             },
             enemy1: {
                 body: enemy1,
@@ -374,7 +373,8 @@ const createWorld = (level = 1) => {
                 renderer: Player,
                 size: [40, 40],
                 direction: 1,
-                velocity: 3
+                velocity: 3,
+                sounds // Pass sounds to player entity
             },
             enemy1: {
                 body: enemy1,
@@ -398,7 +398,6 @@ const createWorld = (level = 1) => {
         };
     } else if (level === 4) {
         // Level 4: A very challenging level!
-        // Create multiple platforms and obstacles to force precise movement.
         let platformTop = Matter.Bodies.rectangle(
             WINDOW_WIDTH / 2,
             150,
@@ -456,7 +455,6 @@ const createWorld = (level = 1) => {
         );
 
         // Create player positioned on the bottom platform.
-        // Bottom platform center = 550, top edge = 550 - 20 = 530, so player's center ≈ 510.
         let player = createPlayer(200, 510);
         Matter.Body.set(player, {
             friction: 0.1,
@@ -525,7 +523,8 @@ const createWorld = (level = 1) => {
                 renderer: Player,
                 size: [40, 40],
                 direction: 1,
-                velocity: 3
+                velocity: 3,
+                sounds // Pass sounds to player entity
             },
             enemy1: {
                 body: enemy1,

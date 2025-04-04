@@ -1,19 +1,13 @@
 import Matter from "matter-js";
 
-let score = 0; // Initialize score
-let isScoring = false; // Flag to check if scoring condition is met
-let scoreTimeout; // Timeout for scoring
-let keyPressed = {};
-
-const PLAYER_SPEED = 3; // Increased speed for visibility
-const PLAYER_WIDTH = 40;
-const JUMP_FORCE = -12; // Stronger jump force for getting over the cube
+const PLAYER_SPEED = 3; // Define player speed
+const JUMP_FORCE = -12; // Define jump force
 
 const MoveSystem = (entities, { time, dispatch }) => {
     const player = entities.player;
     const goalArea = entities.goalArea;
     const draggableCube = entities.draggableCube;
-    
+
     if (!player?.body) return entities;
 
     const LEFT_BOUNDARY = 50;
@@ -29,20 +23,26 @@ const MoveSystem = (entities, { time, dispatch }) => {
     } else if (currentX <= LEFT_BOUNDARY && player.direction === -1) {
         player.direction = 1;
     }
-    
+
     // Check for enemy collision(s)
-    // If an enemy exists and the player's bounds overlap with its bounds, reverse direction.
     if (entities.enemy && Matter.Bounds.overlaps(player.body.bounds, entities.enemy.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
-    // If there are multiple enemies, check each (if defined):
     if (entities.enemy1 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy1.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
     if (entities.enemy2 && Matter.Bounds.overlaps(player.body.bounds, entities.enemy2.body.bounds)) {
         player.direction = -player.direction;
+        if (player.sounds && player.sounds.collisionSound) {
+            player.sounds.collisionSound.playAsync(); // Play collision sound
+        }
     }
-    // Add additional enemy checks as needed...
 
     // Move player horizontally with the updated direction
     Matter.Body.setVelocity(player.body, {
@@ -67,6 +67,9 @@ const MoveSystem = (entities, { time, dispatch }) => {
             x: player.body.velocity.x,
             y: JUMP_FORCE
         });
+        if (player.sounds && player.sounds.jumpSound) {
+            player.sounds.jumpSound.playAsync(); // Play jump sound
+        }
     }
 
     // Check death condition (player fell too low)

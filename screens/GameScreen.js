@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Platform, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import createWorld from "../components/createWorld";
 import Physics from "../systems/Physics";
 import MoveSystem from "../systems/MoveSystem";
 import HoleSystem from "../systems/HoleSystem";
 import LevelData from "../levels/LevelData";
-import styles from "../styles/GameScreenStyles"; // Adjust the path as needed
-
+import styles from "../styles/GameScreenStyles";
+import { Audio } from 'expo-av';
 
 const GameScreen = () => {
     const [gameEngine, setGameEngine] = useState(null);
@@ -16,7 +16,32 @@ const GameScreen = () => {
     const [isDeath, setIsDeath] = useState(false);
     const [currentLevel, setCurrentLevel] = useState(1);
     const [showNextButton, setShowNextButton] = useState(false);
-    
+    const [sounds, setSounds] = useState({});
+
+    const loadSounds = async () => {
+        const jumpSound = new Audio.Sound();
+        const collisionSound = new Audio.Sound();
+        const victorySound = new Audio.Sound();
+        const deathSound = new Audio.Sound();
+
+        await jumpSound.loadAsync(require('../assets/sounds/jump.mp3'));
+        await collisionSound.loadAsync(require('../assets/sounds/collision.mp3'));
+        await victorySound.loadAsync(require('../assets/sounds/victory.mp3'));
+        await deathSound.loadAsync(require('../assets/sounds/death.mp3'));
+
+        setSounds({ jumpSound, collisionSound, victorySound, deathSound });
+    };
+
+    useEffect(() => {
+        loadSounds(); // Load sounds when the component mounts
+        return () => {
+            // Release sound resources when the component unmounts
+            Object.values(sounds).forEach(sound => {
+                sound.unloadAsync();
+            });
+        };
+    }, []);
+
     // Reset the game state when the level changes
     useEffect(() => {
         setRunning(true);
@@ -25,11 +50,43 @@ const GameScreen = () => {
         setShowNextButton(false);
         
         if (gameEngine) {
-            gameEngine.swap(createWorld(currentLevel));
+            gameEngine.swap(createWorld(currentLevel, sounds)); // Pass sounds to createWorld
         }
         
         console.log(`Level ${currentLevel} loaded`);
     }, [currentLevel]);
+
+    const onEvent = (event) => {
+        if (event.type === "victory") {
+            setIsVictory(true);
+            setRunning(false);
+            sounds.victorySound.playAsync(); // Play victory sound
+        } else if (event.type === "death") {
+            setIsDeath(true);
+            setRunning(false);
+            sounds.deathSound.playAsync(); // Play death sound
+        }
+    };
+
+    const goToNextLevel = () => {
+        // Check if there is a next level
+        if (currentLevel < LevelData.length) {
+            setCurrentLevel(currentLevel + 1);
+        }
+    };
+
+    const restartLevel = () => {
+        // First reset the game state
+        setRunning(true);
+        setIsVictory(false);
+        setIsDeath(false);
+        setShowNextButton(false);
+        
+        // Then swap the world to reset the level
+        if (gameEngine) {
+            gameEngine.swap(createWorld(currentLevel, sounds)); // Pass sounds to createWorld
+        }
+    };
 
     useEffect(() => {
         setRunning(true);
@@ -54,7 +111,7 @@ const GameScreen = () => {
             };
         }
     }, [gameEngine]);
-    
+
     // When user wins, show victory message and the next level button after a delay
     useEffect(() => {
         if (isVictory) {
@@ -65,36 +122,6 @@ const GameScreen = () => {
             return () => clearTimeout(timer);
         }
     }, [isVictory]);
-
-    const onEvent = (event) => {
-        if (event.type === "victory") {
-            setIsVictory(true);
-            setRunning(false);
-        } else if (event.type === "death") {
-            setIsDeath(true);
-            setRunning(false);
-        }
-    };
-    
-    const goToNextLevel = () => {
-        // Check if there is a next level
-        if (currentLevel < LevelData.length) {
-            setCurrentLevel(currentLevel + 1);
-        }
-    };
-
-    const restartLevel = () => {
-        // First reset the game state
-        setRunning(true);
-        setIsVictory(false);
-        setIsDeath(false);
-        setShowNextButton(false);
-        
-        // Then swap the world to reset the level
-        if (gameEngine) {
-            gameEngine.swap(createWorld(currentLevel));
-        }
-    };
 
     return (
         <ImageBackground
@@ -116,7 +143,7 @@ const GameScreen = () => {
                     ref={(ref) => setGameEngine(ref)}
                     style={styles.gameContainer}
                     systems={[Physics, MoveSystem, HoleSystem]}
-                    entities={createWorld(currentLevel)}
+                    entities={createWorld(currentLevel, sounds)} // Pass sounds to entities
                     running={running}
                     onEvent={onEvent}
                 />
@@ -143,7 +170,7 @@ const GameScreen = () => {
                             style={styles.restartButton}
                             onPress={restartLevel}
                         >
-                            <Text style={styles.restartText}>Try Again ?</Text>
+                            <Text style={styles.restartText}>Try Again?</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -151,7 +178,5 @@ const GameScreen = () => {
         </ImageBackground>
     );
 };
-
-
 
 export default GameScreen;
