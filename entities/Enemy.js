@@ -1,29 +1,19 @@
 import React from "react";
 import { View } from "react-native";
+import styles from "../styles/EnemyStyles";
 
 const Enemy = (props) => {
-    const { body } = props;
-    
-    if (!body) return null;
+  const { body } = props;
+  if (!body) return null;
 
-    const width = 40;
-    const height = 40;
-    const x = body.position.x - width / 2;
-    const y = body.position.y - height / 2;
+  const width = 40;
+  const height = 40;
+  const x = body.position.x - width / 2;
+  const y = body.position.y - height / 2;
 
-    return (
-        <View
-            style={{
-                position: "absolute",
-                left: x,
-                top: y,
-                width: width,
-                height: height,
-                backgroundColor: "red",
-                borderRadius: 5,
-            }}
-        />
-    );
+  return (
+    <View style={[styles.enemy, { left: x, top: y }]} />
+  );
 };
 
-export default Enemy; 
+export default Enemy;
