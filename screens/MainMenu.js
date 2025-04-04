@@ -18,7 +18,11 @@ export default function MainMenu({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GameScreen')}>
           <Text style={styles.buttonText}>Start Game</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LevelSelectScreen')}>
+          <Text style={styles.buttonText}>Level Select</Text>
+        </TouchableOpacity>
       </View>
+      
     </ImageBackground>
   );
 }

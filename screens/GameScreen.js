@@ -8,13 +8,13 @@ import HoleSystem from "../systems/HoleSystem";
 import LevelData from "../levels/LevelData";
 import styles from "../styles/GameScreenStyles"; // Adjust the path as needed
 
-
-const GameScreen = () => {
+const GameScreen = ({ route }) => {
+    const { level } = route.params || { level: 1 }; // Get the level from route params, default to 1
     const [gameEngine, setGameEngine] = useState(null);
     const [running, setRunning] = useState(true);
     const [isVictory, setIsVictory] = useState(false);
     const [isDeath, setIsDeath] = useState(false);
-    const [currentLevel, setCurrentLevel] = useState(1);
+    const [currentLevel, setCurrentLevel] = useState(level); // Initialize with the selected level
     const [showNextButton, setShowNextButton] = useState(false);
     
     // Reset the game state when the level changes
@@ -151,7 +151,5 @@ const GameScreen = () => {
         </ImageBackground>
     );
 };
-
-
 
 export default GameScreen;
