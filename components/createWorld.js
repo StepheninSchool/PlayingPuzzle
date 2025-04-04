@@ -492,7 +492,7 @@ Matter.Events.on(engine, "collisionStart", (event) => {
 
     // Position the player on the bottom platform.
     // Bottom platform center is 550; its top edge is ~530, so the player's center should be ~510.
-    let player = createPlayer(200, 510);
+    let player = createPlayer(300, 510);
     Matter.Body.set(player, {
       friction: 0.1,
       restitution: 0.0,
