@@ -6,7 +6,11 @@
 
 -This document provides step-by-step instructions for setting up, running, and contributing to the project.
 
-- project created by @StepheninSchool
+- project created by:
+-  [@StepheninSchool](https://github.com/StepheninSchool)
+-  [@alex999alex](https://github.com/alex999alex)
+-  [@uncreative01](https://github.com/uncreative01)
+-  [@Mai](https://github.com/W0496269)
 ---
 
 ## Game Features
