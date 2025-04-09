@@ -14,7 +14,6 @@ export default function MainMenu({ navigation }) {
       resizeMode="cover"
     >
       <View style={styles.container}>
-        <Text style={styles.title}><strong>Playing Puzzle</strong>.</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GameScreen')}>
           <Text style={styles.buttonText}>Start Game</Text>
         </TouchableOpacity>
