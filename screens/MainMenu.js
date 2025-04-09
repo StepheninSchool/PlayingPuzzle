@@ -1,20 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
-import { Audio } from 'expo-av'; // Import Audio from expo-av
-import styles from '../styles/MainMenuStyles'; // Adjust the path as needed
+import { Audio } from 'expo-av';
+import styles from '../styles/MainMenuStyles';
+
+// Singleton for background music
+const backgroundMusicSingleton = {
+  instance: null,
+};
 
 export default function MainMenu({ navigation }) {
-  const [backgroundMusic, setBackgroundMusic] = useState(null);
+  const backgroundMusicRef = useRef(null);
 
   useEffect(() => {
-    // Load and play background music
     const loadMusic = async () => {
-      const sound = new Audio.Sound();
       try {
-        await sound.loadAsync(require('../assets/sounds/background-music.mp3')); // Add your music file here
-        await sound.setIsLoopingAsync(true); // Loop the music
-        await sound.playAsync(); // Play the music
-        setBackgroundMusic(sound); // Save the sound instance
+        // Set audio mode for compatibility
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          staysActiveInBackground: true,
+          playsInSilentModeIOS: true,
+        });
+
+        // Check if the music is already playing
+        if (!backgroundMusicSingleton.instance) {
+          const sound = new Audio.Sound();
+          await sound.loadAsync(require('../assets/sounds/background-music.mp3'));
+          await sound.setIsLoopingAsync(true);
+          await sound.playAsync();
+          backgroundMusicSingleton.instance = sound; // Save the instance
+        }
+
+        backgroundMusicRef.current = backgroundMusicSingleton.instance;
       } catch (error) {
         console.error('Error loading or playing background music:', error);
       }
@@ -22,18 +38,19 @@ export default function MainMenu({ navigation }) {
 
     loadMusic();
 
-    // Cleanup: Stop and unload the music when the component unmounts
+    // Cleanup: Stop and unload the music only if the app is closed
     return () => {
-      if (backgroundMusic) {
-        backgroundMusic.stopAsync().catch(() => {}); // Safely stop the music
-        backgroundMusic.unloadAsync().catch(() => {}); // Safely unload the music
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.stopAsync().catch(() => {});
+        backgroundMusicRef.current.unloadAsync().catch(() => {});
+        backgroundMusicSingleton.instance = null; // Reset the singleton
       }
     };
-  }, []); // Removed backgroundMusic from the dependency array
+  }, []);
 
   return (
     <ImageBackground
-      source={require('../assets/background2.png')} // Corrected to only include the image path
+      source={require('../assets/background2.png')}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
